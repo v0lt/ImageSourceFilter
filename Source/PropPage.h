@@ -23,18 +23,18 @@
 #include "../BaseClasses/streams.h"
 #include "IImageSource.h"
 
-// CIRMainPPage
+// CISMainPPage
 
 class __declspec(uuid("DF0FC50C-81CE-4141-9BC3-0BEB233181BB"))
-	CIRMainPPage : public CBasePropertyPage, public CWindow
+	CISMainPPage : public CBasePropertyPage, public CWindow
 {
 	CComQIPtr<IImageSource> m_pImageSource;
 
 	Settings_t m_SetsPP;
 
 public:
-	CIRMainPPage(LPUNKNOWN lpunk, HRESULT* phr);
-	~CIRMainPPage();
+	CISMainPPage(LPUNKNOWN lpunk, HRESULT* phr);
+	~CISMainPPage();
 
 private:
 	void SetControls();

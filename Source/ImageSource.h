@@ -79,7 +79,7 @@ class CImageStream
 private:
 	CCritSec m_cSharedState;
 
-	REFERENCE_TIME m_AvgTimePerFrame = UNITS; // 1 fps
+	REFERENCE_TIME m_AvgTimePerFrame = UNITS * 2; // 0.5 fps
 	REFERENCE_TIME m_rtSampleTime = 0;
 	REFERENCE_TIME m_rtPosition = 0;
 

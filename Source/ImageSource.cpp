@@ -129,7 +129,7 @@ STDMETHODIMP CMpcImageSource::GetPages(CAUUID* pPages)
 		return E_OUTOFMEMORY;
 	}
 
-	pPages->pElems[0] = __uuidof(CIRMainPPage);
+	pPages->pElems[0] = __uuidof(CISMainPPage);
 
 	return S_OK;
 }

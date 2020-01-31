@@ -65,27 +65,28 @@ void ComboBox_SelectByItemData(HWND hWnd, int nIDComboBox, LONG_PTR data)
 }
 
 
-// CIRMainPPage
+// CISMainPPage
 
 // https://msdn.microsoft.com/ru-ru/library/windows/desktop/dd375010(v=vs.85).aspx
 
-CIRMainPPage::CIRMainPPage(LPUNKNOWN lpunk, HRESULT* phr) :
+CISMainPPage::CISMainPPage(LPUNKNOWN lpunk, HRESULT* phr) :
 	CBasePropertyPage(L"MainProp", lpunk, IDD_MAINPROPPAGE, IDS_MAINPROPPAGE_TITLE)
 {
-	DLog(L"CIRMainPPage()");
+	DLog(L"CISMainPPage()");
 }
 
-CIRMainPPage::~CIRMainPPage()
+CISMainPPage::~CISMainPPage()
 {
-	DLog(L"~CIRMainPPage()");
+	DLog(L"~CISMainPPage()");
 }
 
-void CIRMainPPage::SetControls()
+void CISMainPPage::SetControls()
 {
-	//TODO
+	SetDlgItemTextW(IDC_EDIT1, L"unlimited");
+	SetDlgItemTextW(IDC_EDIT2, L"16384");
 }
 
-HRESULT CIRMainPPage::OnConnect(IUnknown *pUnk)
+HRESULT CISMainPPage::OnConnect(IUnknown *pUnk)
 {
 	if (pUnk == nullptr) return E_POINTER;
 
@@ -97,7 +98,7 @@ HRESULT CIRMainPPage::OnConnect(IUnknown *pUnk)
 	return S_OK;
 }
 
-HRESULT CIRMainPPage::OnDisconnect()
+HRESULT CISMainPPage::OnDisconnect()
 {
 	if (m_pImageSource == nullptr) {
 		return E_UNEXPECTED;
@@ -108,14 +109,14 @@ HRESULT CIRMainPPage::OnDisconnect()
 	return S_OK;
 }
 
-HRESULT CIRMainPPage::OnActivate()
+HRESULT CISMainPPage::OnActivate()
 {
 	// set m_hWnd for CWindow
 	m_hWnd = m_hwnd;
 
 	m_pImageSource->GetSettings(m_SetsPP);
 
-	SetDlgItemTextW(IDC_EDIT2, GetNameAndVersion());
+	SetDlgItemTextW(IDC_EDIT3, GetNameAndVersion());
 
 	SetControls();
 
@@ -124,7 +125,7 @@ HRESULT CIRMainPPage::OnActivate()
 	return S_OK;
 }
 
-INT_PTR CIRMainPPage::OnReceiveMessage(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+INT_PTR CISMainPPage::OnReceiveMessage(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	if (uMsg == WM_COMMAND) {
 		//LRESULT lValue;
@@ -144,7 +145,7 @@ INT_PTR CIRMainPPage::OnReceiveMessage(HWND hwnd, UINT uMsg, WPARAM wParam, LPAR
 	return CBasePropertyPage::OnReceiveMessage(hwnd, uMsg, wParam, lParam);
 }
 
-HRESULT CIRMainPPage::OnApplyChanges()
+HRESULT CISMainPPage::OnApplyChanges()
 {
 	m_pImageSource->SetSettings(m_SetsPP);
 	m_pImageSource->SaveSettings();
