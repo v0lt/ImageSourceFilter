@@ -1,0 +1,27 @@
+#pragma once
+
+#include "../revision.h"
+
+#ifndef MPCIS_REV_DATE
+#define MPCIS_REV_DATE      0
+#endif
+
+#ifndef MPCIS_REV_HASH
+#define MPCIS_REV_HASH      0
+#endif
+
+#ifndef MPCIS_REV_NUM
+#define MPCIS_REV_NUM       0
+#endif
+
+#define DO_MAKE_STR(x)      #x
+#define MAKE_STR(x)         DO_MAKE_STR(x)
+
+#define MPCIS_RELEASE       0
+
+#define MPCIS_VERSION_MAJOR 0
+#define MPCIS_VERSION_MINOR 0
+#define MPCIS_VERSION_BUILD 0
+
+#define MPCIS_VERSION_NUM   MPCIS_VERSION_MAJOR,MPCIS_VERSION_MINOR,MPCIS_VERSION_BUILD,MPCIS_REV_NUM
+#define MPCIS_VERSION_STR   MAKE_STR(MPCIS_VERSION_MAJOR) "." MAKE_STR(MPCIS_VERSION_MINOR) "." MAKE_STR(MPCIS_VERSION_BUILD) "." MAKE_STR(MPCIS_REV_NUM)
