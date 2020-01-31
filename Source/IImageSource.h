@@ -22,13 +22,15 @@
 
 struct Settings_t {
 	int  iImageDuration;
+	UINT iMaxDimension;
 
 	Settings_t() {
 		SetDefault();
 	}
 
 	void SetDefault() {
-		iImageDuration      = 0;
+		iImageDuration = 0;
+		iMaxDimension  = 4096;
 	}
 };
 

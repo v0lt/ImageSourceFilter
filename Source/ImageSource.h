@@ -79,13 +79,18 @@ class CImageStream
 private:
 	CCritSec m_cSharedState;
 
-	REFERENCE_TIME m_AvgTimePerFrame;
-	REFERENCE_TIME m_rtSampleTime, m_rtPosition;
+	REFERENCE_TIME m_AvgTimePerFrame = UNITS; // 1 fps
+	REFERENCE_TIME m_rtSampleTime = 0;
+	REFERENCE_TIME m_rtPosition = 0;
 
-	BOOL m_bDiscontinuity, m_bFlushing;
+	BOOL m_bDiscontinuity = FALSE;
+	BOOL m_bFlushing = FALSE;
 
+	UINT m_Width  = 0;
+	UINT m_Height = 0;
+	UINT m_Stride = 0;
+	UINT m_nBufferSize = 0;
 	CAutoVectorPtr<BYTE> m_pFrameBuffer;
-	int m_nBufferSize;
 
 	HRESULT OnThreadStartPlay();
 	HRESULT OnThreadCreate();

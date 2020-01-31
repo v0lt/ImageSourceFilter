@@ -19,6 +19,7 @@
  */
 
 #include "stdafx.h"
+//#include <wincodec.h>
 #include "Helper.h"
 #include "PropPage.h"
 #include "../Include/Version.h"
@@ -82,7 +83,7 @@ STDMETHODIMP CMpcImageSource::Load(LPCOLESTR pszFileName, const AM_MEDIA_TYPE* p
 	}
 
 	HRESULT hr = S_OK;
-	if (!(new CImageStream(L"SubtitleStream", this, &hr))) {
+	if (!(new CImageStream(pszFileName, this, &hr))) {
 		return E_OUTOFMEMORY;
 	}
 
@@ -184,14 +185,115 @@ STDMETHODIMP CMpcImageSource::GetInt64(LPCSTR field, __int64 *value)
 CImageStream::CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr)
 	: CSourceStream(name, phr, pParent, L"Output")
 	, CSourceSeeking(name, (IPin*)this, phr, &m_cSharedState)
-	, m_AvgTimePerFrame(0)
-	, m_rtSampleTime(0)
-	, m_rtPosition(0)
-	, m_bDiscontinuity(FALSE)
-	, m_bFlushing(FALSE)
 {
 	CAutoLock cAutoLock(&m_cSharedState);
-	m_rtDuration = m_rtStop = 0;
+
+	IWICImagingFactory* pWICFactory;
+	IWICBitmapDecoder *pDecoder = nullptr;
+	IWICBitmapFrameDecode *pFrameDecode = nullptr;
+	WICPixelFormatGUID pixelFormat = GUID_NULL;
+	IWICBitmapSource *pSource = NULL;
+
+	HRESULT hr = CoCreateInstance(
+		CLSID_WICImagingFactory,
+		nullptr,
+		CLSCTX_INPROC_SERVER,
+		IID_IWICImagingFactory,
+		(LPVOID*)&pWICFactory
+	);
+
+#ifdef _DEBUG
+	{
+		CStringW dbgstr("WIC Decoders:");
+		CComPtr<IEnumUnknown> pEnum;
+		DWORD dwOptions = WICComponentEnumerateDefault;
+		HRESULT hr2 = pWICFactory->CreateComponentEnumerator(WICDecoder, dwOptions, &pEnum);
+		if (SUCCEEDED(hr2)) {
+			WCHAR buffer[256]; // if not enough will be truncated
+			ULONG cbActual = 0;
+			CComPtr<IUnknown> pElement = nullptr;
+			while (S_OK == pEnum->Next(1, &pElement, &cbActual)) {
+				UINT cbActual = 0;
+				CComQIPtr<IWICBitmapCodecInfo> pCodecInfo = pElement;
+				// Codec name
+				hr2 = pCodecInfo->GetFriendlyName(std::size(buffer)-1, buffer, &cbActual);
+				if (SUCCEEDED(hr2)) {
+					dbgstr.AppendFormat(L"\n  %s", buffer);
+					// File extensions
+					hr2 = pCodecInfo->GetFileExtensions(std::size(buffer) - 1, buffer, &cbActual);
+					if (SUCCEEDED(hr2)) {
+						dbgstr.AppendFormat(L" (%s)", buffer);
+					}
+				}
+				pElement = nullptr;
+			}
+		}
+
+		DLog(dbgstr);
+	}
+#endif
+
+	if (SUCCEEDED(hr)) {
+		hr = pWICFactory->CreateDecoderFromFilename(
+			name,
+			nullptr,
+			GENERIC_READ,
+			WICDecodeMetadataCacheOnLoad,
+			&pDecoder
+		);
+	}
+
+	if (SUCCEEDED(hr)) {
+		hr = pDecoder->GetFrame(0, &pFrameDecode);
+	}
+
+	if (SUCCEEDED(hr)) {
+		pSource = pFrameDecode;
+		pSource->AddRef();
+	}
+
+	if (SUCCEEDED(hr)) {
+		hr = pSource->GetPixelFormat(&pixelFormat);
+	}
+
+	if (SUCCEEDED(hr)) {
+		hr = pSource->GetSize(&m_Width, &m_Height);
+		DLogIf(SUCCEEDED(hr), L"Image frame size: %u x %u", m_Width, m_Height);
+	}
+
+	if (SUCCEEDED(hr)) {
+		IWICBitmapSource *pFrameConvert = nullptr;
+
+		if (!IsEqualGUID(pixelFormat, GUID_WICPixelFormat32bppPBGRA)){
+			hr = WICConvertBitmapSource(GUID_WICPixelFormat32bppPBGRA, pSource, &pFrameConvert);
+			if (SUCCEEDED(hr)) {
+				pSource->Release();      // the converter has a reference to the source
+				pSource = nullptr;       // so we don't need it anymore.
+				pSource = pFrameConvert; // let's treat the 32bppPBGRA converter as the source
+			}
+		}
+
+		m_Stride = m_Width * 4;
+		m_nBufferSize = m_Stride * m_Height;
+
+		bool ret = m_pFrameBuffer.Allocate(m_nBufferSize);
+		if (ret) {
+			WICRect rc = { 0, 0, m_Width, m_Height };
+			hr = pSource->CopyPixels(&rc, m_Stride, m_nBufferSize, m_pFrameBuffer.m_p);
+		}
+		else {
+			hr = E_OUTOFMEMORY;
+		}
+
+		pFrameConvert->Release();
+	}
+
+	SAFE_RELEASE(pDecoder);
+	SAFE_RELEASE(pSource);
+	SAFE_RELEASE(pFrameDecode);
+	SAFE_RELEASE(pWICFactory);
+
+	*phr = hr;
 }
 
 CImageStream::~CImageStream()
@@ -332,6 +434,8 @@ HRESULT CImageStream::FillBuffer(IMediaSample* pSample)
 			return S_FALSE;
 		}
 
+		long outSize = pSample->GetSize();
+
 		AM_MEDIA_TYPE* pmt;
 		if (SUCCEEDED(pSample->GetMediaType(&pmt)) && pmt) {
 			CMediaType mt(*pmt);
@@ -340,7 +444,7 @@ HRESULT CImageStream::FillBuffer(IMediaSample* pSample)
 			DeleteMediaType(pmt);
 		}
 
-		int w, h, bpp;
+		UINT w, h, bpp;
 		if (m_mt.formattype == FORMAT_VideoInfo2) {
 			w = ((VIDEOINFOHEADER2*)m_mt.pbFormat)->bmiHeader.biWidth;
 			h = abs(((VIDEOINFOHEADER2*)m_mt.pbFormat)->bmiHeader.biHeight);
@@ -349,11 +453,11 @@ HRESULT CImageStream::FillBuffer(IMediaSample* pSample)
 			return S_FALSE;
 		}
 
-		{
-			// copy frame to buffer
+		if (w == m_Width && h == m_Height && bpp == 32 && (long)m_nBufferSize <= outSize){
+			memcpy(pDataOut, pDataIn, m_nBufferSize);
 		}
 
-		pSample->SetActualDataLength(m_nBufferSize); // TODO
+		pSample->SetActualDataLength(m_nBufferSize);
 
 		REFERENCE_TIME rtStart, rtStop;
 		// The sample times are modified by the current rate.
@@ -393,14 +497,14 @@ HRESULT CImageStream::GetMediaType(int iPosition, CMediaType* pmt)
 
 	VIDEOINFOHEADER2* vih2 = (VIDEOINFOHEADER2*)pmt->AllocFormatBuffer(sizeof(VIDEOINFOHEADER2));
 	memset(vih2, 0, sizeof(VIDEOINFOHEADER2));
-	vih2->AvgTimePerFrame = m_AvgTimePerFrame;
-	vih2->bmiHeader.biSize = sizeof(vih2->bmiHeader);
-	vih2->bmiHeader.biWidth = 640; // TODO
-	vih2->bmiHeader.biHeight = -780; // TODO
-	vih2->bmiHeader.biPlanes = 1;
-	vih2->bmiHeader.biBitCount = 32;
+	vih2->AvgTimePerFrame         = m_AvgTimePerFrame;
+	vih2->bmiHeader.biSize        = sizeof(vih2->bmiHeader);
+	vih2->bmiHeader.biWidth       = m_Width;
+	vih2->bmiHeader.biHeight      = -(long)m_Height;
+	vih2->bmiHeader.biPlanes      = 1;
+	vih2->bmiHeader.biBitCount    = 32;
 	vih2->bmiHeader.biCompression = BI_RGB;
-	vih2->bmiHeader.biSizeImage = m_nBufferSize;
+	vih2->bmiHeader.biSizeImage   = m_nBufferSize;
 
 	pmt->SetSampleSize(vih2->bmiHeader.biSizeImage);
 
@@ -412,7 +516,11 @@ HRESULT CImageStream::CheckMediaType(const CMediaType* pmt)
 	if (pmt->majortype == MEDIATYPE_Video
 		&& pmt->subtype == MEDIASUBTYPE_RGB32
 		&& pmt->formattype == FORMAT_VideoInfo2) {
-		return S_OK;
+
+		VIDEOINFOHEADER2* vih2 = (VIDEOINFOHEADER2*)pmt->Format();
+		if (vih2->bmiHeader.biWidth == (long)m_Width && vih2->bmiHeader.biHeight == -(long)m_Height && vih2->bmiHeader.biBitCount == 32) {
+			return S_OK;
+		}
 	}
 
 	return E_INVALIDARG;
@@ -422,4 +530,3 @@ STDMETHODIMP CImageStream::Notify(IBaseFilter* pSender, Quality q)
 {
 	return E_NOTIMPL;
 }
-
