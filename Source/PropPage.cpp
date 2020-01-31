@@ -120,7 +120,6 @@ HRESULT CIRMainPPage::OnActivate()
 	SetControls();
 
 	SetCursor(m_hWnd, IDC_ARROW);
-	SetCursor(m_hWnd, IDC_COMBO1, IDC_HAND);
 
 	return S_OK;
 }
@@ -131,7 +130,14 @@ INT_PTR CIRMainPPage::OnReceiveMessage(HWND hwnd, UINT uMsg, WPARAM wParam, LPAR
 		//LRESULT lValue;
 		const int nID = LOWORD(wParam);
 
-		// TODO
+		if (HIWORD(wParam) == BN_CLICKED) {
+			if (nID == IDC_BUTTON1) {
+				m_SetsPP.SetDefault();
+				SetControls();
+				SetDirty();
+				return (LRESULT)1;
+			}
+		}
 	}
 
 	// Let the parent class handle the message.

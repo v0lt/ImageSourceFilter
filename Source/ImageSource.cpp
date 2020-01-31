@@ -138,7 +138,7 @@ STDMETHODIMP CMpcImageSource::GetPages(CAUUID* pPages)
 
 STDMETHODIMP_(bool) CMpcImageSource::GetActive()
 {
-	return S_FALSE;
+	return (GetPinCount() > 0);
 }
 
 STDMETHODIMP_(void) CMpcImageSource::GetSettings(Settings_t& setings)
