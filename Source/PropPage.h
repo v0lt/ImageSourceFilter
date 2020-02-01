@@ -31,12 +31,17 @@ class __declspec(uuid("DF0FC50C-81CE-4141-9BC3-0BEB233181BB"))
 	CComQIPtr<IImageSource> m_pImageSource;
 
 	Settings_t m_SetsPP;
+	int iDurationSliderPos = 0;
 
 public:
 	CISMainPPage(LPUNKNOWN lpunk, HRESULT* phr);
 	~CISMainPPage();
 
 private:
+	void SetDurationToSlider();
+	void SetDurationToEdit();
+	int GetDurationFromSlider();
+
 	void SetControls();
 
 	HRESULT OnConnect(IUnknown* pUnknown) override;

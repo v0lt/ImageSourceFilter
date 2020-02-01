@@ -26,6 +26,7 @@
 #include "ImageSource.h"
 
 #define OPT_REGKEY_IMAGESOURCE L"Software\\MPC-BE Filters\\MPC Image Source"
+#define OPT_ImageDuration      L"ImageDuration"
 
 //
 // CMpcImageSource
@@ -50,6 +51,10 @@ CMpcImageSource::CMpcImageSource(LPUNKNOWN lpunk, HRESULT* phr)
 
 	CRegKey key;
 	if (ERROR_SUCCESS == key.Open(HKEY_CURRENT_USER, OPT_REGKEY_IMAGESOURCE, KEY_READ)) {
+		DWORD dw;
+		if (ERROR_SUCCESS == key.QueryDWORDValue(OPT_ImageDuration, dw)) {
+			m_Sets.iImageDuration = discard((int)dw, 0, 0, 10);
+		}
 	}
 
 	return;
@@ -155,7 +160,7 @@ STDMETHODIMP CMpcImageSource::SaveSettings()
 {
 	CRegKey key;
 	if (ERROR_SUCCESS == key.Create(HKEY_CURRENT_USER, OPT_REGKEY_IMAGESOURCE)) {
-
+		key.SetDWORDValue(OPT_ImageDuration, m_Sets.iImageDuration);
 	}
 
 	return S_OK;

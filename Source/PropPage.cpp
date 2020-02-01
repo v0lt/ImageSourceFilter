@@ -80,9 +80,36 @@ CISMainPPage::~CISMainPPage()
 	DLog(L"~CISMainPPage()");
 }
 
+void CISMainPPage::SetDurationToSlider()
+{
+	int pos = (m_SetsPP.iImageDuration >= 1 && m_SetsPP.iImageDuration <= 10)
+		? m_SetsPP.iImageDuration
+		: 11;
+	SendDlgItemMessageW(IDC_SLIDER1, TBM_SETPOS, 1, pos);
+}
+
+void CISMainPPage::SetDurationToEdit()
+{
+	CStringW str;
+	if (m_SetsPP.iImageDuration >= 1 && m_SetsPP.iImageDuration <= 10) {
+		str.Format(L"%d", m_SetsPP.iImageDuration);
+	} else {
+		str= L"unlimited";
+	}
+	SetDlgItemTextW(IDC_EDIT1, str);
+}
+
+int CISMainPPage::GetDurationFromSlider()
+{
+	LRESULT lValue = SendDlgItemMessageW(IDC_SLIDER1, TBM_GETPOS, 0, 0);
+	return (lValue >= 1 && lValue <= 10) ? (int)lValue : 0;
+}
+
 void CISMainPPage::SetControls()
 {
-	SetDlgItemTextW(IDC_EDIT1, L"unlimited");
+	SetDurationToSlider();
+	SetDurationToEdit();
+
 	SetDlgItemTextW(IDC_EDIT2, L"16384");
 }
 
@@ -115,7 +142,9 @@ HRESULT CISMainPPage::OnActivate()
 	m_hWnd = m_hwnd;
 
 	m_pImageSource->GetSettings(m_SetsPP);
-
+	
+	SendDlgItemMessageW(IDC_SLIDER1, TBM_SETRANGE, 0, MAKELONG(1, 11));
+	SendDlgItemMessageW(IDC_SLIDER1, TBM_SETTICFREQ, 1, 0);
 	SetDlgItemTextW(IDC_EDIT3, GetNameAndVersion());
 
 	SetControls();
@@ -138,6 +167,17 @@ INT_PTR CISMainPPage::OnReceiveMessage(HWND hwnd, UINT uMsg, WPARAM wParam, LPAR
 				SetDirty();
 				return (LRESULT)1;
 			}
+		}
+	}
+	else if (uMsg == WM_HSCROLL) {
+		if ((HWND)lParam == GetDlgItem(IDC_SLIDER1)) {
+			const int duration = GetDurationFromSlider();
+			if (duration != m_SetsPP.iImageDuration) {
+				m_SetsPP.iImageDuration = duration;
+				SetDurationToEdit();
+				SetDirty();
+			}
+			return (LRESULT)1;
 		}
 	}
 
