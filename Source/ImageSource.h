@@ -39,6 +39,7 @@ class __declspec(uuid("7DB5C3B3-2419-4508-B1D0-F2D22DA8E439"))
 	, public CExFilterConfigImpl
 {
 private:
+	friend class CImageStream;
 	// Options
 	Settings_t m_Sets;
 
@@ -91,6 +92,7 @@ private:
 	UINT m_Stride = 0;
 	UINT m_nBufferSize = 0;
 	CAutoVectorPtr<BYTE> m_pFrameBuffer;
+	CStringW m_ContainerFormat;
 
 	HRESULT OnThreadStartPlay();
 	HRESULT OnThreadCreate();

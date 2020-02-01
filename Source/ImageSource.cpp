@@ -25,7 +25,7 @@
 #include "../Include/Version.h"
 #include "ImageSource.h"
 
-#define OPT_REGKEY_VIDEORENDERER L"Software\\MPC-BE Filters\\MPC Image Source"
+#define OPT_REGKEY_IMAGESOURCE L"Software\\MPC-BE Filters\\MPC Image Source"
 
 //
 // CMpcImageSource
@@ -49,7 +49,7 @@ CMpcImageSource::CMpcImageSource(LPUNKNOWN lpunk, HRESULT* phr)
 	// read settings
 
 	CRegKey key;
-	if (ERROR_SUCCESS == key.Open(HKEY_CURRENT_USER, OPT_REGKEY_VIDEORENDERER, KEY_READ)) {
+	if (ERROR_SUCCESS == key.Open(HKEY_CURRENT_USER, OPT_REGKEY_IMAGESOURCE, KEY_READ)) {
 	}
 
 	return;
@@ -154,7 +154,7 @@ STDMETHODIMP_(void) CMpcImageSource::SetSettings(const Settings_t setings)
 STDMETHODIMP CMpcImageSource::SaveSettings()
 {
 	CRegKey key;
-	if (ERROR_SUCCESS == key.Create(HKEY_CURRENT_USER, OPT_REGKEY_VIDEORENDERER)) {
+	if (ERROR_SUCCESS == key.Create(HKEY_CURRENT_USER, OPT_REGKEY_IMAGESOURCE)) {
 
 	}
 
@@ -188,11 +188,11 @@ CImageStream::CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr)
 {
 	CAutoLock cAutoLock(&m_cSharedState);
 
-	IWICImagingFactory* pWICFactory;
-	IWICBitmapDecoder *pDecoder = nullptr;
-	IWICBitmapFrameDecode *pFrameDecode = nullptr;
+	CComPtr<IWICImagingFactory> pWICFactory;
+	CComPtr<IWICBitmapDecoder> pDecoder;
+	CComPtr<IWICBitmapFrameDecode> pFrameDecode;
 	WICPixelFormatGUID pixelFormat = GUID_NULL;
-	IWICBitmapSource *pSource = NULL;
+	CComPtr<IWICBitmapSource> pSource;
 
 	HRESULT hr = CoCreateInstance(
 		CLSID_WICImagingFactory,
@@ -244,12 +244,15 @@ CImageStream::CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr)
 	}
 
 	if (SUCCEEDED(hr)) {
+		GUID containerFormat = GUID_NULL;
+		pDecoder->GetContainerFormat(&containerFormat);
+		m_ContainerFormat = ContainerFormat2Str(containerFormat);
+
 		hr = pDecoder->GetFrame(0, &pFrameDecode);
 	}
 
 	if (SUCCEEDED(hr)) {
 		pSource = pFrameDecode;
-		pSource->AddRef();
 	}
 
 	if (SUCCEEDED(hr)) {
@@ -267,9 +270,7 @@ CImageStream::CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr)
 		if (!IsEqualGUID(pixelFormat, GUID_WICPixelFormat32bppPBGRA)){
 			hr = WICConvertBitmapSource(GUID_WICPixelFormat32bppPBGRA, pSource, &pFrameConvert);
 			if (SUCCEEDED(hr)) {
-				pSource->Release();      // the converter has a reference to the source
-				pSource = nullptr;       // so we don't need it anymore.
-				pSource = pFrameConvert; // let's treat the 32bppPBGRA converter as the source
+				pSource = pFrameConvert;
 			}
 		}
 
@@ -288,10 +289,17 @@ CImageStream::CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr)
 		pFrameConvert->Release();
 	}
 
-	SAFE_RELEASE(pDecoder);
-	SAFE_RELEASE(pSource);
-	SAFE_RELEASE(pFrameDecode);
-	SAFE_RELEASE(pWICFactory);
+	if (SUCCEEDED(hr)) {
+		// get a copy of the settings
+		const Settings_t Sets = static_cast<CMpcImageSource*>(pParent)->m_Sets;
+
+		if (Sets.iImageDuration > 0) {
+			m_rtDuration = m_rtStop = UNITS * Sets.iImageDuration;
+			if (m_AvgTimePerFrame < m_rtDuration) {
+				m_AvgTimePerFrame = m_rtDuration;
+			}
+		}
+	}
 
 	*phr = hr;
 }

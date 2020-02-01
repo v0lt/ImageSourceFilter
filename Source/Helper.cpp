@@ -108,6 +108,23 @@ CStringW HR2Str(const HRESULT hr)
 	return str;
 }
 
+const WCHAR* ContainerFormat2Str(const GUID guid)
+{
+	const WCHAR* pStr;
+
+	if (guid == GUID_ContainerFormatBmp)       { pStr = L"BMP"; }
+	else if (guid == GUID_ContainerFormatPng)  { pStr = L"PNG"; }
+	else if (guid == GUID_ContainerFormatIco)  { pStr = L"ICO"; }
+	else if (guid == GUID_ContainerFormatJpeg) { pStr = L"JPEG"; }
+	else if (guid == GUID_ContainerFormatTiff) { pStr = L"TIFF"; }
+	else if (guid == GUID_ContainerFormatGif)  { pStr = L"GIF"; }
+	else if (guid == GUID_ContainerFormatWmp)  { pStr = L"HD Photo"; }
+	else if (guid == GUID_ContainerFormatDds)  { pStr = L"DDS"; }
+	else { pStr = L"Unknown"; }
+	 
+	return pStr;
+}
+
 HRESULT GetDataFromResource(LPVOID& data, DWORD& size, UINT resid)
 {
 	static const HMODULE hModule = (HMODULE)&__ImageBase;
