@@ -193,11 +193,15 @@ CImageStream::CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr)
 {
 	CAutoLock cAutoLock(&m_cSharedState);
 
+	// get a copy of the settings
+	const Settings_t Sets = static_cast<CMpcImageSource*>(pParent)->m_Sets;
+
 	CComPtr<IWICImagingFactory> pWICFactory;
 	CComPtr<IWICBitmapDecoder> pDecoder;
 	CComPtr<IWICBitmapFrameDecode> pFrameDecode;
 	WICPixelFormatGUID pixelFormat = GUID_NULL;
 	CComPtr<IWICBitmapSource> pSource;
+	CComPtr<IWICBitmapScaler> pIScaler;
 
 	HRESULT hr = CoCreateInstance(
 		CLSID_WICImagingFactory,
@@ -279,6 +283,22 @@ CImageStream::CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr)
 			}
 		}
 
+		UINT dimension = std::max(m_Width, m_Height);
+		if (dimension > Sets.iMaxDimension) {
+			hr = pWICFactory->CreateBitmapScaler(&pIScaler);
+			if (SUCCEEDED(hr)) {
+				UINT divider = (dimension + Sets.iMaxDimension - 1) / Sets.iMaxDimension;
+				UINT w = m_Width / divider;
+				UINT h = m_Height / divider;
+
+				hr = pIScaler->Initialize(pSource, w, h, WICBitmapInterpolationModeFant);
+				if (SUCCEEDED(hr)) {
+					m_Width = w;
+					m_Height = h;
+				}
+			}
+		}
+
 		m_Stride = m_Width * 4;
 		m_nBufferSize = m_Stride * m_Height;
 
@@ -295,9 +315,6 @@ CImageStream::CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr)
 	}
 
 	if (SUCCEEDED(hr)) {
-		// get a copy of the settings
-		const Settings_t Sets = static_cast<CMpcImageSource*>(pParent)->m_Sets;
-
 		if (Sets.iImageDuration > 0) {
 			m_rtDuration = m_rtStop = UNITS * Sets.iImageDuration;
 			if (m_AvgTimePerFrame < m_rtDuration) {

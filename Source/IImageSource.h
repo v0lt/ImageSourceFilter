@@ -30,7 +30,7 @@ struct Settings_t {
 
 	void SetDefault() {
 		iImageDuration = 0;
-		iMaxDimension  = 4096;
+		iMaxDimension  = 16384;
 	}
 };
 
