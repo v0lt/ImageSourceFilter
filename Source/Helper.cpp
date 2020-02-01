@@ -23,6 +23,12 @@
 #include "../Include/Version.h"
 #include "Helper.h"
 
+// missing GUIDs for Win8.1 SDK
+//DEFINE_GUID(GUID_ContainerFormatAdng, 0xf3ff6d0d, 0x38c0, 0x41c4, 0xb1, 0xfe, 0x1f, 0x38, 0x24, 0xf1, 0x7b, 0x84);
+//DEFINE_GUID(GUID_ContainerFormatHeif, 0xe1e62521, 0x6787, 0x405b, 0xa3, 0x39, 0x50, 0x07, 0x15, 0xb5, 0x76, 0x3f);
+//DEFINE_GUID(GUID_ContainerFormatWebp, 0xe094b0e2, 0x67f2, 0x45b3, 0xb0, 0xea, 0x11, 0x53, 0x37, 0xca, 0x7c, 0xf3);
+//DEFINE_GUID(GUID_ContainerFormatRaw, 0xfe99ce60, 0xf19c, 0x433c, 0xa3, 0xae, 0x00, 0xac, 0xef, 0xa9, 0xca, 0x21);
+
 #ifndef _WIN32_WINNT_WINTHRESHOLD
 #define _WIN32_WINNT_WINTHRESHOLD 0x0A00
 VERSIONHELPERAPI IsWindows10OrGreater()
@@ -118,10 +124,14 @@ const WCHAR* ContainerFormat2Str(const GUID guid)
 	else if (guid == GUID_ContainerFormatJpeg) { pStr = L"JPEG"; }
 	else if (guid == GUID_ContainerFormatTiff) { pStr = L"TIFF"; }
 	else if (guid == GUID_ContainerFormatGif)  { pStr = L"GIF"; }
-	else if (guid == GUID_ContainerFormatWmp)  { pStr = L"HD Photo"; }
+	else if (guid == GUID_ContainerFormatWmp)  { pStr = L"HD Photo/JPEG XR"; }
 	else if (guid == GUID_ContainerFormatDds)  { pStr = L"DDS"; }
+//	else if (guid == GUID_ContainerFormatAdng) { pStr = L"DNG"; }
+//	else if (guid == GUID_ContainerFormatHeif) { pStr = L"HEIF"; }
+//	else if (guid == GUID_ContainerFormatWebp) { pStr = L"WebP"; }
+//	else if (guid == GUID_ContainerFormatRaw)  { pStr = L"RAW"; }
 	else { pStr = L"Unknown"; }
-	 
+
 	return pStr;
 }
 
