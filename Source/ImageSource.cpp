@@ -27,6 +27,7 @@
 
 #define OPT_REGKEY_IMAGESOURCE L"Software\\MPC-BE Filters\\MPC Image Source"
 #define OPT_ImageDuration      L"ImageDuration"
+#define OPT_MaxDimension       L"MaxDimension"
 
 //
 // CMpcImageSource
@@ -54,6 +55,9 @@ CMpcImageSource::CMpcImageSource(LPUNKNOWN lpunk, HRESULT* phr)
 		DWORD dw;
 		if (ERROR_SUCCESS == key.QueryDWORDValue(OPT_ImageDuration, dw)) {
 			m_Sets.iImageDuration = discard((int)dw, 0, 0, 10);
+		}
+		if (ERROR_SUCCESS == key.QueryDWORDValue(OPT_MaxDimension, dw)) {
+			m_Sets.iMaxDimension = ALIGN(std::clamp(dw, 4096ul, 16384ul), 4096);
 		}
 	}
 
@@ -161,6 +165,7 @@ STDMETHODIMP CMpcImageSource::SaveSettings()
 	CRegKey key;
 	if (ERROR_SUCCESS == key.Create(HKEY_CURRENT_USER, OPT_REGKEY_IMAGESOURCE)) {
 		key.SetDWORDValue(OPT_ImageDuration, m_Sets.iImageDuration);
+		key.SetDWORDValue(OPT_MaxDimension,  m_Sets.iMaxDimension);
 	}
 
 	return S_OK;

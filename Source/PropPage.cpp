@@ -105,12 +105,20 @@ int CISMainPPage::GetDurationFromSlider()
 	return (lValue >= 1 && lValue <= 10) ? (int)lValue : 0;
 }
 
+void CISMainPPage::SetDimensionToEdit()
+{
+	CStringW str;
+	str.Format(L"%u", m_SetsPP.iMaxDimension);
+	SetDlgItemTextW(IDC_EDIT2, str);
+}
+
 void CISMainPPage::SetControls()
 {
 	SetDurationToSlider();
 	SetDurationToEdit();
 
-	SetDlgItemTextW(IDC_EDIT2, L"16384");
+	SendDlgItemMessageW(IDC_SLIDER2, TBM_SETPOS, 1, m_SetsPP.iMaxDimension / 4096);
+	SetDimensionToEdit();
 }
 
 HRESULT CISMainPPage::OnConnect(IUnknown *pUnk)
@@ -145,6 +153,8 @@ HRESULT CISMainPPage::OnActivate()
 	
 	SendDlgItemMessageW(IDC_SLIDER1, TBM_SETRANGE, 0, MAKELONG(1, 11));
 	SendDlgItemMessageW(IDC_SLIDER1, TBM_SETTICFREQ, 1, 0);
+	SendDlgItemMessageW(IDC_SLIDER2, TBM_SETRANGE, 0, MAKELONG(1, 4));
+	SendDlgItemMessageW(IDC_SLIDER2, TBM_SETTICFREQ, 1, 0);
 	SetDlgItemTextW(IDC_EDIT3, GetNameAndVersion());
 
 	SetControls();
@@ -157,7 +167,6 @@ HRESULT CISMainPPage::OnActivate()
 INT_PTR CISMainPPage::OnReceiveMessage(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	if (uMsg == WM_COMMAND) {
-		//LRESULT lValue;
 		const int nID = LOWORD(wParam);
 
 		if (HIWORD(wParam) == BN_CLICKED) {
@@ -175,6 +184,15 @@ INT_PTR CISMainPPage::OnReceiveMessage(HWND hwnd, UINT uMsg, WPARAM wParam, LPAR
 			if (duration != m_SetsPP.iImageDuration) {
 				m_SetsPP.iImageDuration = duration;
 				SetDurationToEdit();
+				SetDirty();
+			}
+			return (LRESULT)1;
+		}
+		if ((HWND)lParam == GetDlgItem(IDC_SLIDER2)) {
+			LRESULT lValue = SendDlgItemMessageW(IDC_SLIDER2, TBM_GETPOS, 0, 0) * 4096;
+			if (lValue != m_SetsPP.iMaxDimension) {
+				m_SetsPP.iMaxDimension = lValue;
+				SetDimensionToEdit();
 				SetDirty();
 			}
 			return (LRESULT)1;

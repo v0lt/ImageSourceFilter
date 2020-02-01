@@ -41,6 +41,7 @@ private:
 	void SetDurationToSlider();
 	void SetDurationToEdit();
 	int GetDurationFromSlider();
+	void SetDimensionToEdit();
 
 	void SetControls();
 
