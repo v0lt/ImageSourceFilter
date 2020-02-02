@@ -88,6 +88,8 @@ private:
 	BOOL m_bDiscontinuity = FALSE;
 	BOOL m_bFlushing = FALSE;
 
+	std::vector<CMediaType> m_mts;
+
 	UINT m_Width  = 0;
 	UINT m_Height = 0;
 	UINT m_Stride = 0;

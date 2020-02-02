@@ -196,6 +196,8 @@ CImageStream::CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr)
 {
 	CAutoLock cAutoLock(&m_cSharedState);
 
+	m_mts.clear();
+
 	// get a copy of the settings
 	const Settings_t Sets = static_cast<CMpcImageSource*>(pParent)->m_Sets;
 
@@ -327,6 +329,29 @@ CImageStream::CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr)
 				m_AvgTimePerFrame = m_rtDuration;
 			}
 		}
+
+		CMediaType mt;
+		mt.SetType(&MEDIATYPE_Video);
+		mt.SetSubtype(&MEDIASUBTYPE_RGB32);
+		mt.SetFormatType(&FORMAT_VideoInfo2);
+		mt.SetTemporalCompression(FALSE);
+
+		VIDEOINFOHEADER2* vih2 = (VIDEOINFOHEADER2*)mt.AllocFormatBuffer(sizeof(VIDEOINFOHEADER2));
+		memset(vih2, 0, sizeof(VIDEOINFOHEADER2));
+		vih2->rcSource                = { 0, 0, (long)m_Width, (long)m_Height};
+		vih2->rcTarget                = vih2->rcSource;
+		vih2->AvgTimePerFrame         = m_AvgTimePerFrame;
+		vih2->bmiHeader.biSize        = sizeof(vih2->bmiHeader);
+		vih2->bmiHeader.biWidth       = m_Width;
+		vih2->bmiHeader.biHeight      = -(long)m_Height;
+		vih2->bmiHeader.biPlanes      = 1;
+		vih2->bmiHeader.biBitCount    = 32;
+		vih2->bmiHeader.biCompression = BI_RGB;
+		vih2->bmiHeader.biSizeImage   = m_nBufferSize;
+
+		mt.SetSampleSize(vih2->bmiHeader.biSizeImage);
+
+		m_mts.push_back(mt);
 	}
 
 	*phr = hr;
@@ -522,29 +547,13 @@ HRESULT CImageStream::GetMediaType(int iPosition, CMediaType* pmt)
 	if (iPosition < 0) {
 		return E_INVALIDARG;
 	}
-	if (iPosition > 0) {
+	if (iPosition + 1 > m_mts.size()) {
 		return VFW_S_NO_MORE_ITEMS;
 	}
 
-	pmt->SetType(&MEDIATYPE_Video);
-	pmt->SetSubtype(&MEDIASUBTYPE_RGB32);
-	pmt->SetFormatType(&FORMAT_VideoInfo2);
-	pmt->SetTemporalCompression(TRUE);
+	*pmt = m_mts[iPosition];
 
-	VIDEOINFOHEADER2* vih2 = (VIDEOINFOHEADER2*)pmt->AllocFormatBuffer(sizeof(VIDEOINFOHEADER2));
-	memset(vih2, 0, sizeof(VIDEOINFOHEADER2));
-	vih2->AvgTimePerFrame         = m_AvgTimePerFrame;
-	vih2->bmiHeader.biSize        = sizeof(vih2->bmiHeader);
-	vih2->bmiHeader.biWidth       = m_Width;
-	vih2->bmiHeader.biHeight      = -(long)m_Height;
-	vih2->bmiHeader.biPlanes      = 1;
-	vih2->bmiHeader.biBitCount    = 32;
-	vih2->bmiHeader.biCompression = BI_RGB;
-	vih2->bmiHeader.biSizeImage   = m_nBufferSize;
-
-	pmt->SetSampleSize(vih2->bmiHeader.biSizeImage);
-
-	return NOERROR;
+	return S_OK;
 }
 
 HRESULT CImageStream::CheckMediaType(const CMediaType* pmt)
