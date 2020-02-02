@@ -79,7 +79,22 @@ inline CStringW CStringFromGUID(const GUID& guid)
 }
 
 CStringW HR2Str(const HRESULT hr);
+
+enum ColorSystem_t {
+	CS_YUV,
+	CS_RGB,
+	CS_GRAY
+};
+
+struct PixelFormatDesc {
+	GUID          wicguid;
+	const char*   str;
+	int           cdepth;
+	ColorSystem_t cstype;
+	bool          alpha;
+};
+
 const char* ContainerFormat2Str(const GUID guid);
-const char* PixelFormat2Str(const GUID guid);
+const PixelFormatDesc* GetPixelFormatDesc(const GUID guid);
 
 HRESULT GetDataFromResource(LPVOID& data, DWORD& size, UINT resid);

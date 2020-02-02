@@ -19,8 +19,6 @@
  */
 
 #include "stdafx.h"
-//#include <wincodec.h>
-#include "Helper.h"
 #include "PropPage.h"
 #include "../Include/Version.h"
 #include "ImageSource.h"
@@ -268,8 +266,8 @@ CImageStream::CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr)
 
 	if (SUCCEEDED(hr)) {
 		hr = pFrameDecode->GetPixelFormat(&pixelFormat);
-		m_DecodePixelFormat = PixelFormat2Str(pixelFormat);
-		DLog(L"Decode pixel format: %S", m_DecodePixelFormat);
+		m_pDecodePixFmtDesc = GetPixelFormatDesc(pixelFormat);
+		DLog(L"Decode pixel format: %S", m_pDecodePixFmtDesc->str);
 	}
 
 	if (SUCCEEDED(hr)) {

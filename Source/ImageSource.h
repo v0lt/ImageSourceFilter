@@ -22,6 +22,7 @@
 
 #include <atltypes.h>
 #include <thread>
+#include "Helper.h"
 #include "IImageSource.h"
 #include "../Include/FilterInterfacesImpl.h"
 
@@ -93,7 +94,7 @@ private:
 	UINT m_nBufferSize = 0;
 	CAutoVectorPtr<BYTE> m_pFrameBuffer;
 	CStringA m_ContainerFormat;
-	CStringA m_DecodePixelFormat;
+	const PixelFormatDesc* m_pDecodePixFmtDesc = nullptr;
 
 	HRESULT OnThreadStartPlay();
 	HRESULT OnThreadCreate();

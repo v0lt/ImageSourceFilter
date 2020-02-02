@@ -135,43 +135,45 @@ const char* ContainerFormat2Str(const GUID guid)
 	return pStr;
 }
 
-const char* PixelFormat2Str(const GUID guid)
+static const PixelFormatDesc s_UnknownPixelFormatDesc = { GUID_NULL, "Unknown", 0, CS_RGB, false };
+
+static const PixelFormatDesc s_PixelFormatDescs[] = {
+	{ GUID_WICPixelFormat1bppIndexed, "1bppIndexed",  8, CS_RGB, false },
+	{ GUID_WICPixelFormat2bppIndexed, "2bppIndexed",  8, CS_RGB, false },
+	{ GUID_WICPixelFormat4bppIndexed, "4bppIndexed",  8, CS_RGB, false },
+	{ GUID_WICPixelFormat8bppIndexed, "8bppIndexed",  8, CS_RGB, false },
+	{ GUID_WICPixelFormatBlackWhite , "BlackWhite",   1, CS_RGB, false },
+	{ GUID_WICPixelFormat2bppGray,    "2bppGray",     2, CS_RGB, false },
+	{ GUID_WICPixelFormat4bppGray,    "4bppGray",     4, CS_RGB, false },
+	{ GUID_WICPixelFormat8bppGray,    "8bppGray",     8, CS_RGB, false },
+	{ GUID_WICPixelFormat16bppBGR555, "16bppBGR555",  5, CS_RGB, false },
+	{ GUID_WICPixelFormat16bppBGR565, "16bppBGR565",  6, CS_RGB, false },
+	{ GUID_WICPixelFormat16bppGray,   "16bppGray",   16, CS_RGB, false },
+	{ GUID_WICPixelFormat24bppBGR,    "24bppBGR",     8, CS_RGB, false },
+	{ GUID_WICPixelFormat24bppRGB,    "24bppRGB",     8, CS_RGB, false },
+	{ GUID_WICPixelFormat32bppBGR,    "32bppBGR",     8, CS_RGB, false },
+	{ GUID_WICPixelFormat32bppBGRA,   "32bppBGRA",    8, CS_RGB, true  },
+	{ GUID_WICPixelFormat32bppPBGRA,  "32bppPBGRA",   8, CS_RGB, true  },
+	{ GUID_WICPixelFormat32bppRGB,    "32bppRGB",     8, CS_RGB, false },
+	{ GUID_WICPixelFormat32bppRGBA,   "32bppRGBA",    8, CS_RGB, true  },
+	{ GUID_WICPixelFormat32bppPRGBA,  "32bppPRGBA",   8, CS_RGB, true  },
+	{ GUID_WICPixelFormat48bppRGB,    "48bppRGB",    16, CS_RGB, false },
+	{ GUID_WICPixelFormat48bppBGR,    "48bppBGR",    16, CS_RGB, false },
+	{ GUID_WICPixelFormat64bppRGB,    "64bppRGB",    16, CS_RGB, false },
+	{ GUID_WICPixelFormat64bppRGBA,   "64bppRGBA",   16, CS_RGB, true  },
+	{ GUID_WICPixelFormat64bppBGRA,   "64bppBGRA",   16, CS_RGB, true  },
+	{ GUID_WICPixelFormat64bppPRGBA,  "64bppPRGBA",  16, CS_RGB, true  },
+	{ GUID_WICPixelFormat64bppPBGRA,  "64bppPBGRA",  16, CS_RGB, true  },
+};
+
+const PixelFormatDesc* GetPixelFormatDesc(const GUID guid)
 {
-	const char* pStr;
-
-	if (guid == GUID_WICPixelFormatDontCare)            { pStr = "Undefined"; }
-	else if (guid == GUID_WICPixelFormat1bppIndexed)    { pStr = "1bppIndexed"; }
-	else if (guid == GUID_WICPixelFormat2bppIndexed)    { pStr = "2bppIndexed"; }
-	else if (guid == GUID_WICPixelFormat4bppIndexed)    { pStr = "4bppIndexed"; }
-	else if (guid == GUID_WICPixelFormat8bppIndexed)    { pStr = "8bppIndexed"; }
-	else if (guid == GUID_WICPixelFormatBlackWhite)     { pStr = "BlackWhite"; }
-	else if (guid == GUID_WICPixelFormat2bppGray)       { pStr = "2bppGray"; }
-	else if (guid == GUID_WICPixelFormat4bppGray)       { pStr = "4bppGray"; }
-	else if (guid == GUID_WICPixelFormat8bppGray)       { pStr = "8bppGray"; }
-	else if (guid == GUID_WICPixelFormat8bppAlpha)      { pStr = "8bppAlpha"; }
-	else if (guid == GUID_WICPixelFormat16bppBGR555)    { pStr = "16bppBGR555"; }
-	else if (guid == GUID_WICPixelFormat16bppBGR565)    { pStr = "16bppBGR565"; }
-	else if (guid == GUID_WICPixelFormat16bppBGRA5551)  { pStr = "16bppBGRA5551"; }
-	else if (guid == GUID_WICPixelFormat16bppGray)      { pStr = "16bppGray"; }
-	else if (guid == GUID_WICPixelFormat24bppBGR)       { pStr = "24bppBGR"; }
-	else if (guid == GUID_WICPixelFormat24bppRGB)       { pStr = "24bppRGB"; }
-	else if (guid == GUID_WICPixelFormat32bppBGR)       { pStr = "32bppBGR"; }
-	else if (guid == GUID_WICPixelFormat32bppBGRA)      { pStr = "32bppBGRA"; }
-	else if (guid == GUID_WICPixelFormat32bppPBGRA)     { pStr = "32bppPBGRA"; }
-	else if (guid == GUID_WICPixelFormat32bppGrayFloat) { pStr = "32bppGrayFloat"; }
-	else if (guid == GUID_WICPixelFormat32bppRGB)       { pStr = "32bppRGB"; }
-	else if (guid == GUID_WICPixelFormat32bppRGBA)      { pStr = "32bppRGBA"; }
-	else if (guid == GUID_WICPixelFormat32bppPRGBA)     { pStr = "32bppPRGBA"; }
-	else if (guid == GUID_WICPixelFormat48bppRGB)       { pStr = "48bppRGB"; }
-	else if (guid == GUID_WICPixelFormat48bppBGR)       { pStr = "48bppBGR"; }
-	else if (guid == GUID_WICPixelFormat64bppRGB)       { pStr = "64bppRGB"; }
-	else if (guid == GUID_WICPixelFormat64bppRGBA)      { pStr = "64bppRGBA"; }
-	else if (guid == GUID_WICPixelFormat64bppBGRA)      { pStr = "64bppBGRA"; }
-	else if (guid == GUID_WICPixelFormat64bppPRGBA)     { pStr = "64bppPRGBA"; }
-	else if (guid == GUID_WICPixelFormat64bppPBGRA)     { pStr = "64bppPBGRA"; }
-	else { pStr = "Unknown"; }
-
-	return pStr;
+	for (const auto& pfd : s_PixelFormatDescs) {
+		if (pfd.wicguid == guid) {
+			return &pfd;
+		}
+	}
+	return &s_UnknownPixelFormatDesc;
 }
 
 HRESULT GetDataFromResource(LPVOID& data, DWORD& size, UINT resid)
