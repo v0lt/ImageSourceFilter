@@ -114,23 +114,62 @@ CStringW HR2Str(const HRESULT hr)
 	return str;
 }
 
-const WCHAR* ContainerFormat2Str(const GUID guid)
+const char* ContainerFormat2Str(const GUID guid)
 {
-	const WCHAR* pStr;
+	const char* pStr;
 
-	if (guid == GUID_ContainerFormatBmp)       { pStr = L"BMP"; }
-	else if (guid == GUID_ContainerFormatPng)  { pStr = L"PNG"; }
-	else if (guid == GUID_ContainerFormatIco)  { pStr = L"ICO"; }
-	else if (guid == GUID_ContainerFormatJpeg) { pStr = L"JPEG"; }
-	else if (guid == GUID_ContainerFormatTiff) { pStr = L"TIFF"; }
-	else if (guid == GUID_ContainerFormatGif)  { pStr = L"GIF"; }
-	else if (guid == GUID_ContainerFormatWmp)  { pStr = L"HD Photo/JPEG XR"; }
-	else if (guid == GUID_ContainerFormatDds)  { pStr = L"DDS"; }
-//	else if (guid == GUID_ContainerFormatAdng) { pStr = L"DNG"; }
-//	else if (guid == GUID_ContainerFormatHeif) { pStr = L"HEIF"; }
-//	else if (guid == GUID_ContainerFormatWebp) { pStr = L"WebP"; }
-//	else if (guid == GUID_ContainerFormatRaw)  { pStr = L"RAW"; }
-	else { pStr = L"Unknown"; }
+	if (guid == GUID_ContainerFormatBmp)       { pStr = "BMP"; }
+	else if (guid == GUID_ContainerFormatPng)  { pStr = "PNG"; }
+	else if (guid == GUID_ContainerFormatIco)  { pStr = "ICO"; }
+	else if (guid == GUID_ContainerFormatJpeg) { pStr = "JPEG"; }
+	else if (guid == GUID_ContainerFormatTiff) { pStr = "TIFF"; }
+	else if (guid == GUID_ContainerFormatGif)  { pStr = "GIF"; }
+	else if (guid == GUID_ContainerFormatWmp)  { pStr = "HD Photo/JPEG XR"; }
+	else if (guid == GUID_ContainerFormatDds)  { pStr = "DDS"; }
+//	else if (guid == GUID_ContainerFormatAdng) { pStr = "DNG"; }
+//	else if (guid == GUID_ContainerFormatHeif) { pStr = "HEIF"; }
+//	else if (guid == GUID_ContainerFormatWebp) { pStr = "WebP"; }
+//	else if (guid == GUID_ContainerFormatRaw)  { pStr = "RAW"; }
+	else { pStr = "Unknown"; }
+
+	return pStr;
+}
+
+const char* PixelFormat2Str(const GUID guid)
+{
+	const char* pStr;
+
+	if (guid == GUID_WICPixelFormatDontCare)            { pStr = "Undefined"; }
+	else if (guid == GUID_WICPixelFormat1bppIndexed)    { pStr = "1bppIndexed"; }
+	else if (guid == GUID_WICPixelFormat2bppIndexed)    { pStr = "2bppIndexed"; }
+	else if (guid == GUID_WICPixelFormat4bppIndexed)    { pStr = "4bppIndexed"; }
+	else if (guid == GUID_WICPixelFormat8bppIndexed)    { pStr = "8bppIndexed"; }
+	else if (guid == GUID_WICPixelFormatBlackWhite)     { pStr = "BlackWhite"; }
+	else if (guid == GUID_WICPixelFormat2bppGray)       { pStr = "2bppGray"; }
+	else if (guid == GUID_WICPixelFormat4bppGray)       { pStr = "4bppGray"; }
+	else if (guid == GUID_WICPixelFormat8bppGray)       { pStr = "8bppGray"; }
+	else if (guid == GUID_WICPixelFormat8bppAlpha)      { pStr = "8bppAlpha"; }
+	else if (guid == GUID_WICPixelFormat16bppBGR555)    { pStr = "16bppBGR555"; }
+	else if (guid == GUID_WICPixelFormat16bppBGR565)    { pStr = "16bppBGR565"; }
+	else if (guid == GUID_WICPixelFormat16bppBGRA5551)  { pStr = "16bppBGRA5551"; }
+	else if (guid == GUID_WICPixelFormat16bppGray)      { pStr = "16bppGray"; }
+	else if (guid == GUID_WICPixelFormat24bppBGR)       { pStr = "24bppBGR"; }
+	else if (guid == GUID_WICPixelFormat24bppRGB)       { pStr = "24bppRGB"; }
+	else if (guid == GUID_WICPixelFormat32bppBGR)       { pStr = "32bppBGR"; }
+	else if (guid == GUID_WICPixelFormat32bppBGRA)      { pStr = "32bppBGRA"; }
+	else if (guid == GUID_WICPixelFormat32bppPBGRA)     { pStr = "32bppPBGRA"; }
+	else if (guid == GUID_WICPixelFormat32bppGrayFloat) { pStr = "32bppGrayFloat"; }
+	else if (guid == GUID_WICPixelFormat32bppRGB)       { pStr = "32bppRGB"; }
+	else if (guid == GUID_WICPixelFormat32bppRGBA)      { pStr = "32bppRGBA"; }
+	else if (guid == GUID_WICPixelFormat32bppPRGBA)     { pStr = "32bppPRGBA"; }
+	else if (guid == GUID_WICPixelFormat48bppRGB)       { pStr = "48bppRGB"; }
+	else if (guid == GUID_WICPixelFormat48bppBGR)       { pStr = "48bppBGR"; }
+	else if (guid == GUID_WICPixelFormat64bppRGB)       { pStr = "64bppRGB"; }
+	else if (guid == GUID_WICPixelFormat64bppRGBA)      { pStr = "64bppRGBA"; }
+	else if (guid == GUID_WICPixelFormat64bppBGRA)      { pStr = "64bppBGRA"; }
+	else if (guid == GUID_WICPixelFormat64bppPRGBA)     { pStr = "64bppPRGBA"; }
+	else if (guid == GUID_WICPixelFormat64bppPBGRA)     { pStr = "64bppPBGRA"; }
+	else { pStr = "Unknown"; }
 
 	return pStr;
 }

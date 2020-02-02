@@ -204,7 +204,7 @@ CImageStream::CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr)
 	CComPtr<IWICImagingFactory> pWICFactory;
 	CComPtr<IWICBitmapDecoder> pDecoder;
 	CComPtr<IWICBitmapFrameDecode> pFrameDecode;
-	WICPixelFormatGUID pixelFormat = GUID_NULL;
+	WICPixelFormatGUID pixelFormat = GUID_WICPixelFormatUndefined;
 	CComPtr<IWICBitmapSource> pSource;
 	CComPtr<IWICBitmapScaler> pIScaler;
 
@@ -261,16 +261,19 @@ CImageStream::CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr)
 		GUID containerFormat = GUID_NULL;
 		pDecoder->GetContainerFormat(&containerFormat);
 		m_ContainerFormat = ContainerFormat2Str(containerFormat);
+		DLog(L"Container format: %S", m_ContainerFormat);
 
 		hr = pDecoder->GetFrame(0, &pFrameDecode);
 	}
 
 	if (SUCCEEDED(hr)) {
-		pSource = pFrameDecode;
+		hr = pFrameDecode->GetPixelFormat(&pixelFormat);
+		m_DecodePixelFormat = PixelFormat2Str(pixelFormat);
+		DLog(L"Decode pixel format: %S", m_DecodePixelFormat);
 	}
 
 	if (SUCCEEDED(hr)) {
-		hr = pSource->GetPixelFormat(&pixelFormat);
+		pSource = pFrameDecode;
 	}
 
 	if (SUCCEEDED(hr)) {

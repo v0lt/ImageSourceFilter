@@ -79,6 +79,7 @@ inline CStringW CStringFromGUID(const GUID& guid)
 }
 
 CStringW HR2Str(const HRESULT hr);
-const WCHAR* ContainerFormat2Str(const GUID guid);
+const char* ContainerFormat2Str(const GUID guid);
+const char* PixelFormat2Str(const GUID guid);
 
 HRESULT GetDataFromResource(LPVOID& data, DWORD& size, UINT resid);

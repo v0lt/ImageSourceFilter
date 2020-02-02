@@ -92,7 +92,8 @@ private:
 	UINT m_Stride = 0;
 	UINT m_nBufferSize = 0;
 	CAutoVectorPtr<BYTE> m_pFrameBuffer;
-	CStringW m_ContainerFormat;
+	CStringA m_ContainerFormat;
+	CStringA m_DecodePixelFormat;
 
 	HRESULT OnThreadStartPlay();
 	HRESULT OnThreadCreate();
