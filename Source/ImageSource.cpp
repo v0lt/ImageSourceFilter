@@ -322,7 +322,7 @@ CImageStream::CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr)
 	if (SUCCEEDED(hr)) {
 		if (Sets.iImageDuration > 0) {
 			m_rtDuration = m_rtStop = UNITS * Sets.iImageDuration;
-			if (m_AvgTimePerFrame < m_rtDuration) {
+			if (m_AvgTimePerFrame > m_rtDuration) {
 				m_AvgTimePerFrame = m_rtDuration;
 			}
 		}
