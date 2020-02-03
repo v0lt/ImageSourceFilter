@@ -85,7 +85,8 @@ CStringW HR2Str(const HRESULT hr);
 enum ColorSystem_t {
 	CS_YUV,
 	CS_RGB,
-	CS_GRAY
+	CS_GRAY,
+	CS_IDX
 };
 
 struct PixelFormatDesc {
