@@ -552,7 +552,7 @@ HRESULT CImageStream::GetMediaType(int iPosition, CMediaType* pmt)
 	if (iPosition < 0) {
 		return E_INVALIDARG;
 	}
-	if (iPosition >= m_mts.size()) {
+	if (iPosition >= (int)m_mts.size()) {
 		return VFW_S_NO_MORE_ITEMS;
 	}
 
