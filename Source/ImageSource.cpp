@@ -505,18 +505,23 @@ HRESULT CImageStream::FillBuffer(IMediaSample* pSample)
 			DeleteMediaType(pmt);
 		}
 
-		UINT w, h, bpp;
-		if (m_mt.formattype == FORMAT_VideoInfo2) {
-			w = ((VIDEOINFOHEADER2*)m_mt.pbFormat)->bmiHeader.biWidth;
-			h = abs(((VIDEOINFOHEADER2*)m_mt.pbFormat)->bmiHeader.biHeight);
-			bpp = ((VIDEOINFOHEADER2*)m_mt.pbFormat)->bmiHeader.biBitCount;
-		} else {
+		if (m_mt.formattype != FORMAT_VideoInfo2) {
 			return S_FALSE;
 		}
 
-		if (w == m_Width && h == m_Height && bpp == 32 && (long)m_nBufferSize <= outSize){
-			memcpy(pDataOut, pDataIn, m_nBufferSize);
+		VIDEOINFOHEADER2* vih2 = (VIDEOINFOHEADER2*)m_mt.Format();
+		const UINT w = vih2->bmiHeader.biWidth;
+		const UINT h = abs(vih2->bmiHeader.biHeight);
+		const UINT bpp = vih2->bmiHeader.biBitCount;
+
+		if (w < m_Width || h != m_Height && bpp != 32 || outSize < (long)m_nBufferSize) {
+			return S_FALSE;
 		}
+
+		UINT dst_pitch = w * 4;
+		int src_pitch = m_Width * 4;
+
+		CopyFrameAsIs(m_Height, pDataOut, dst_pitch, pDataIn, src_pitch);
 
 		pSample->SetActualDataLength(m_nBufferSize);
 
@@ -547,7 +552,7 @@ HRESULT CImageStream::GetMediaType(int iPosition, CMediaType* pmt)
 	if (iPosition < 0) {
 		return E_INVALIDARG;
 	}
-	if (iPosition + 1 > m_mts.size()) {
+	if (iPosition >= m_mts.size()) {
 		return VFW_S_NO_MORE_ITEMS;
 	}
 
@@ -563,7 +568,7 @@ HRESULT CImageStream::CheckMediaType(const CMediaType* pmt)
 		&& pmt->formattype == FORMAT_VideoInfo2) {
 
 		VIDEOINFOHEADER2* vih2 = (VIDEOINFOHEADER2*)pmt->Format();
-		if (vih2->bmiHeader.biWidth == (long)m_Width && vih2->bmiHeader.biHeight == -(long)m_Height && vih2->bmiHeader.biBitCount == 32) {
+		if (vih2->bmiHeader.biWidth >= (long)m_Width && vih2->bmiHeader.biHeight == -(long)m_Height && vih2->bmiHeader.biBitCount == 32) {
 			return S_OK;
 		}
 	}

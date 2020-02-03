@@ -46,6 +46,8 @@
 #define ALIGN(x, a)           __ALIGN_MASK(x,(decltype(x))(a)-1)
 #define __ALIGN_MASK(x, mask) (((x)+(mask))&~(mask))
 
+DEFINE_GUID(MEDIASUBTYPE_RGB48, 0x30424752, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71); // RGB[48] (RGB0)
+
 template <typename T>
 // If the specified value is out of range, set to default values.
 inline T discard(T const& val, T const& def, T const& lo, T const& hi)
@@ -96,5 +98,7 @@ struct PixelFormatDesc {
 
 const char* ContainerFormat2Str(const GUID guid);
 const PixelFormatDesc* GetPixelFormatDesc(const GUID guid);
+
+void CopyFrameAsIs(const UINT height, BYTE* dst, UINT dst_pitch, const BYTE* src, int src_pitch);
 
 HRESULT GetDataFromResource(LPVOID& data, DWORD& size, UINT resid);

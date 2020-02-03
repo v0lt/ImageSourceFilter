@@ -176,6 +176,22 @@ const PixelFormatDesc* GetPixelFormatDesc(const GUID guid)
 	return &s_UnknownPixelFormatDesc;
 }
 
+void CopyFrameAsIs(const UINT height, BYTE* dst, UINT dst_pitch, const BYTE* src, int src_pitch)
+{
+	if (dst_pitch == src_pitch) {
+		memcpy(dst, src, dst_pitch * height);
+		return;
+	}
+
+	const UINT linesize = std::min((UINT)abs(src_pitch), dst_pitch);
+
+	for (UINT y = 0; y < height; ++y) {
+		memcpy(dst, src, linesize);
+		src += src_pitch;
+		dst += dst_pitch;
+	}
+}
+
 HRESULT GetDataFromResource(LPVOID& data, DWORD& size, UINT resid)
 {
 	static const HMODULE hModule = (HMODULE)&__ImageBase;
