@@ -90,15 +90,16 @@ enum ColorSystem_t {
 };
 
 struct PixelFormatDesc {
-	GUID          wicguid;
-	const char*   str;
-	int           cdepth;
-	ColorSystem_t cstype;
-	bool          alpha;
+	WICPixelFormatGUID wicpfguid;
+	const char*        str;
+	int                cdepth;
+	ColorSystem_t      cstype;
+	bool               alpha;
 };
 
 const char* ContainerFormat2Str(const GUID guid);
-const PixelFormatDesc* GetPixelFormatDesc(const GUID guid);
+const PixelFormatDesc* GetPixelFormatDesc(const WICPixelFormatGUID guid);
+void GetConvertPixelFormat(const PixelFormatDesc* pPixFmtDesc, WICPixelFormatGUID& convertPixFmt, GUID& subtype);
 
 void CopyFrameAsIs(const UINT height, BYTE* dst, UINT dst_pitch, const BYTE* src, int src_pitch);
 

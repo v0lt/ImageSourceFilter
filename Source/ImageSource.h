@@ -26,10 +26,6 @@
 #include "IImageSource.h"
 #include "../Include/FilterInterfacesImpl.h"
 
-const AMOVIESETUP_MEDIATYPE sudPinTypesOut[] = {
-	{&MEDIATYPE_Video, &MEDIASUBTYPE_RGB32},
-};
-
 class __declspec(uuid("7DB5C3B3-2419-4508-B1D0-F2D22DA8E439"))
 	CMpcImageSource
 	: public CSource
@@ -97,6 +93,7 @@ private:
 	CAutoVectorPtr<BYTE> m_pFrameBuffer;
 	CStringA m_ContainerFormat;
 	const PixelFormatDesc* m_pDecodePixFmtDesc = nullptr;
+	GUID m_subtype = GUID_NULL;
 
 	HRESULT OnThreadStartPlay();
 	HRESULT OnThreadCreate();

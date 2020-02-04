@@ -35,7 +35,7 @@ static CUnknown* WINAPI CreateInstance(LPUNKNOWN lpunk, HRESULT* phr)
 }
 
 const AMOVIESETUP_PIN sudpPins[] = {
-	{L"Output", FALSE, TRUE, FALSE, FALSE, &CLSID_NULL, nullptr, std::size(sudPinTypesOut), sudPinTypesOut},
+	{L"Output", FALSE, TRUE, FALSE, FALSE, &CLSID_NULL, nullptr, 0, nullptr},
 };
 
 const AMOVIESETUP_FILTER sudFilter[] = {

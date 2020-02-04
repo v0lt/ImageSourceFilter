@@ -138,10 +138,10 @@ const char* ContainerFormat2Str(const GUID guid)
 static const PixelFormatDesc s_UnknownPixelFormatDesc = { GUID_NULL, "Unknown", 0, CS_RGB, false };
 
 static const PixelFormatDesc s_PixelFormatDescs[] = {
-	{ GUID_WICPixelFormat1bppIndexed, "1bppIndexed",  8, CS_IDX,  false },
-	{ GUID_WICPixelFormat2bppIndexed, "2bppIndexed",  8, CS_IDX,  false },
-	{ GUID_WICPixelFormat4bppIndexed, "4bppIndexed",  8, CS_IDX,  false },
-	{ GUID_WICPixelFormat8bppIndexed, "8bppIndexed",  8, CS_IDX,  false },
+	{ GUID_WICPixelFormat1bppIndexed, "1bppIndexed",  8, CS_IDX,  true  },
+	{ GUID_WICPixelFormat2bppIndexed, "2bppIndexed",  8, CS_IDX,  true  },
+	{ GUID_WICPixelFormat4bppIndexed, "4bppIndexed",  8, CS_IDX,  true  },
+	{ GUID_WICPixelFormat8bppIndexed, "8bppIndexed",  8, CS_IDX,  true  },
 	{ GUID_WICPixelFormatBlackWhite , "BlackWhite",   1, CS_GRAY, false },
 	{ GUID_WICPixelFormat2bppGray,    "2bppGray",     2, CS_GRAY, false },
 	{ GUID_WICPixelFormat4bppGray,    "4bppGray",     4, CS_GRAY, false },
@@ -166,14 +166,25 @@ static const PixelFormatDesc s_PixelFormatDescs[] = {
 	{ GUID_WICPixelFormat64bppPBGRA,  "64bppPBGRA",  16, CS_RGB,  true  },
 };
 
-const PixelFormatDesc* GetPixelFormatDesc(const GUID guid)
+const PixelFormatDesc* GetPixelFormatDesc(const WICPixelFormatGUID guid)
 {
 	for (const auto& pfd : s_PixelFormatDescs) {
-		if (pfd.wicguid == guid) {
+		if (pfd.wicpfguid == guid) {
 			return &pfd;
 		}
 	}
 	return &s_UnknownPixelFormatDesc;
+}
+
+void GetConvertPixelFormat(const PixelFormatDesc* pPixFmtDesc, WICPixelFormatGUID& convertPixFmt, GUID& subtype)
+{
+	if (pPixFmtDesc->alpha) {
+		convertPixFmt = GUID_WICPixelFormat32bppPBGRA;
+		subtype = MEDIASUBTYPE_ARGB32;
+	} else {
+		convertPixFmt = GUID_WICPixelFormat32bppBGR;
+		subtype = MEDIASUBTYPE_RGB32;
+	}
 }
 
 void CopyFrameAsIs(const UINT height, BYTE* dst, UINT dst_pitch, const BYTE* src, int src_pitch)

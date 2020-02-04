@@ -204,7 +204,8 @@ CImageStream::CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr)
 	CComPtr<IWICImagingFactory> pWICFactory;
 	CComPtr<IWICBitmapDecoder> pDecoder;
 	CComPtr<IWICBitmapFrameDecode> pFrameDecode;
-	WICPixelFormatGUID pixelFormat = GUID_WICPixelFormatUndefined;
+	WICPixelFormatGUID pixelFormat = GUID_NULL;
+	WICPixelFormatGUID convertPixFmt = GUID_NULL;
 	CComPtr<IWICBitmapSource> pSource;
 	CComPtr<IWICBitmapScaler> pIScaler;
 
@@ -274,18 +275,18 @@ CImageStream::CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr)
 
 	if (SUCCEEDED(hr)) {
 		pSource = pFrameDecode;
-	}
 
-	if (SUCCEEDED(hr)) {
 		hr = pSource->GetSize(&m_Width, &m_Height);
 		DLogIf(SUCCEEDED(hr), L"Image frame size: %u x %u", m_Width, m_Height);
+
+		GetConvertPixelFormat(m_pDecodePixFmtDesc, convertPixFmt, m_subtype);
 	}
 
 	if (SUCCEEDED(hr)) {
 		IWICBitmapSource *pFrameConvert = nullptr;
 
-		if (!IsEqualGUID(pixelFormat, GUID_WICPixelFormat32bppPBGRA)){
-			hr = WICConvertBitmapSource(GUID_WICPixelFormat32bppPBGRA, pSource, &pFrameConvert);
+		if (!IsEqualGUID(pixelFormat, convertPixFmt)){
+			hr = WICConvertBitmapSource(convertPixFmt, pSource, &pFrameConvert);
 			if (SUCCEEDED(hr)) {
 				pSource = pFrameConvert;
 			}
@@ -332,7 +333,7 @@ CImageStream::CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr)
 
 		CMediaType mt;
 		mt.SetType(&MEDIATYPE_Video);
-		mt.SetSubtype(&MEDIASUBTYPE_RGB32);
+		mt.SetSubtype(&m_subtype);
 		mt.SetFormatType(&FORMAT_VideoInfo2);
 		mt.SetTemporalCompression(FALSE);
 
@@ -564,7 +565,7 @@ HRESULT CImageStream::GetMediaType(int iPosition, CMediaType* pmt)
 HRESULT CImageStream::CheckMediaType(const CMediaType* pmt)
 {
 	if (pmt->majortype == MEDIATYPE_Video
-		&& pmt->subtype == MEDIASUBTYPE_RGB32
+		&& pmt->subtype == m_subtype
 		&& pmt->formattype == FORMAT_VideoInfo2) {
 
 		VIDEOINFOHEADER2* vih2 = (VIDEOINFOHEADER2*)pmt->Format();
