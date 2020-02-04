@@ -83,6 +83,7 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="ImageSource.h" />
+    <ClInclude Include="WICHelper.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BaseClasses\BaseClasses.vcxproj">

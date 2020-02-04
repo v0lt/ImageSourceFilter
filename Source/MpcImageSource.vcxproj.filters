@@ -50,6 +50,9 @@
     <ClInclude Include="ImageSource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="WICHelper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\MpcImageSource.rc2">

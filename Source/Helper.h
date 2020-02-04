@@ -82,25 +82,6 @@ inline CStringW CStringFromGUID(const GUID& guid)
 
 CStringW HR2Str(const HRESULT hr);
 
-enum ColorSystem_t {
-	CS_YUV,
-	CS_RGB,
-	CS_GRAY,
-	CS_IDX
-};
-
-struct PixelFormatDesc {
-	WICPixelFormatGUID wicpfguid;
-	const char*        str;
-	int                cdepth;
-	ColorSystem_t      cstype;
-	bool               alpha;
-};
-
-const char* ContainerFormat2Str(const GUID guid);
-const PixelFormatDesc* GetPixelFormatDesc(const WICPixelFormatGUID guid);
-void GetConvertPixelFormat(const PixelFormatDesc* pPixFmtDesc, WICPixelFormatGUID& convertPixFmt, GUID& subtype);
-
 void CopyFrameAsIs(const UINT height, BYTE* dst, UINT dst_pitch, const BYTE* src, int src_pitch);
 
 HRESULT GetDataFromResource(LPVOID& data, DWORD& size, UINT resid);

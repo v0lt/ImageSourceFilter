@@ -63,10 +63,10 @@ CStringW GetVersionStr()
 #if MPCIS_RELEASE
 	version.Format(L"v%S", MPCIS_VERSION_STR);
 #else
-	version.Format(L"v%S (git-%s-%s)",
+	version.Format(L"v%S (git-%S-%S)",
 		MPCIS_VERSION_STR,
-		_CRT_WIDE(_CRT_STRINGIZE(MPCIS_REV_DATE)),
-		_CRT_WIDE(_CRT_STRINGIZE(MPCIS_REV_HASH))
+		_CRT_STRINGIZE(MPCIS_REV_DATE),
+		_CRT_STRINGIZE(MPCIS_REV_HASH)
 	);
 #endif
 #ifdef _WIN64
@@ -112,79 +112,6 @@ CStringW HR2Str(const HRESULT hr)
 #undef UNPACK_VALUE
 #undef UNPACK_HR_WIN32
 	return str;
-}
-
-const char* ContainerFormat2Str(const GUID guid)
-{
-	const char* pStr;
-
-	if (guid == GUID_ContainerFormatBmp)       { pStr = "BMP"; }
-	else if (guid == GUID_ContainerFormatPng)  { pStr = "PNG"; }
-	else if (guid == GUID_ContainerFormatIco)  { pStr = "ICO"; }
-	else if (guid == GUID_ContainerFormatJpeg) { pStr = "JPEG"; }
-	else if (guid == GUID_ContainerFormatTiff) { pStr = "TIFF"; }
-	else if (guid == GUID_ContainerFormatGif)  { pStr = "GIF"; }
-	else if (guid == GUID_ContainerFormatWmp)  { pStr = "HD Photo/JPEG XR"; }
-	else if (guid == GUID_ContainerFormatDds)  { pStr = "DDS"; }
-//	else if (guid == GUID_ContainerFormatAdng) { pStr = "DNG"; }
-//	else if (guid == GUID_ContainerFormatHeif) { pStr = "HEIF"; }
-//	else if (guid == GUID_ContainerFormatWebp) { pStr = "WebP"; }
-//	else if (guid == GUID_ContainerFormatRaw)  { pStr = "RAW"; }
-	else { pStr = "Unknown"; }
-
-	return pStr;
-}
-
-static const PixelFormatDesc s_UnknownPixelFormatDesc = { GUID_NULL, "Unknown", 0, CS_RGB, false };
-
-static const PixelFormatDesc s_PixelFormatDescs[] = {
-	{ GUID_WICPixelFormat1bppIndexed, "1bppIndexed",  8, CS_IDX,  true  },
-	{ GUID_WICPixelFormat2bppIndexed, "2bppIndexed",  8, CS_IDX,  true  },
-	{ GUID_WICPixelFormat4bppIndexed, "4bppIndexed",  8, CS_IDX,  true  },
-	{ GUID_WICPixelFormat8bppIndexed, "8bppIndexed",  8, CS_IDX,  true  },
-	{ GUID_WICPixelFormatBlackWhite , "BlackWhite",   1, CS_GRAY, false },
-	{ GUID_WICPixelFormat2bppGray,    "2bppGray",     2, CS_GRAY, false },
-	{ GUID_WICPixelFormat4bppGray,    "4bppGray",     4, CS_GRAY, false },
-	{ GUID_WICPixelFormat8bppGray,    "8bppGray",     8, CS_GRAY, false },
-	{ GUID_WICPixelFormat16bppBGR555, "16bppBGR555",  5, CS_RGB,  false },
-	{ GUID_WICPixelFormat16bppBGR565, "16bppBGR565",  6, CS_RGB,  false },
-	{ GUID_WICPixelFormat16bppGray,   "16bppGray",   16, CS_GRAY, false },
-	{ GUID_WICPixelFormat24bppBGR,    "24bppBGR",     8, CS_RGB,  false },
-	{ GUID_WICPixelFormat24bppRGB,    "24bppRGB",     8, CS_RGB,  false },
-	{ GUID_WICPixelFormat32bppBGR,    "32bppBGR",     8, CS_RGB,  false },
-	{ GUID_WICPixelFormat32bppBGRA,   "32bppBGRA",    8, CS_RGB,  true  },
-	{ GUID_WICPixelFormat32bppPBGRA,  "32bppPBGRA",   8, CS_RGB,  true  },
-	{ GUID_WICPixelFormat32bppRGB,    "32bppRGB",     8, CS_RGB,  false },
-	{ GUID_WICPixelFormat32bppRGBA,   "32bppRGBA",    8, CS_RGB,  true  },
-	{ GUID_WICPixelFormat32bppPRGBA,  "32bppPRGBA",   8, CS_RGB,  true  },
-	{ GUID_WICPixelFormat48bppRGB,    "48bppRGB",    16, CS_RGB,  false },
-	{ GUID_WICPixelFormat48bppBGR,    "48bppBGR",    16, CS_RGB,  false },
-	{ GUID_WICPixelFormat64bppRGB,    "64bppRGB",    16, CS_RGB,  false },
-	{ GUID_WICPixelFormat64bppRGBA,   "64bppRGBA",   16, CS_RGB,  true  },
-	{ GUID_WICPixelFormat64bppBGRA,   "64bppBGRA",   16, CS_RGB,  true  },
-	{ GUID_WICPixelFormat64bppPRGBA,  "64bppPRGBA",  16, CS_RGB,  true  },
-	{ GUID_WICPixelFormat64bppPBGRA,  "64bppPBGRA",  16, CS_RGB,  true  },
-};
-
-const PixelFormatDesc* GetPixelFormatDesc(const WICPixelFormatGUID guid)
-{
-	for (const auto& pfd : s_PixelFormatDescs) {
-		if (pfd.wicpfguid == guid) {
-			return &pfd;
-		}
-	}
-	return &s_UnknownPixelFormatDesc;
-}
-
-void GetConvertPixelFormat(const PixelFormatDesc* pPixFmtDesc, WICPixelFormatGUID& convertPixFmt, GUID& subtype)
-{
-	if (pPixFmtDesc->alpha) {
-		convertPixFmt = GUID_WICPixelFormat32bppPBGRA;
-		subtype = MEDIASUBTYPE_ARGB32;
-	} else {
-		convertPixFmt = GUID_WICPixelFormat32bppBGR;
-		subtype = MEDIASUBTYPE_RGB32;
-	}
 }
 
 void CopyFrameAsIs(const UINT height, BYTE* dst, UINT dst_pitch, const BYTE* src, int src_pitch)

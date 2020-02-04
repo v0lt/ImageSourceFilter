@@ -23,6 +23,7 @@
 #include <atltypes.h>
 #include <thread>
 #include "Helper.h"
+#include "WICHelper.h"
 #include "IImageSource.h"
 #include "../Include/FilterInterfacesImpl.h"
 
