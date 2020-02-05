@@ -117,9 +117,8 @@ static void GetPixelFormats(
 	hr = pFrameDecode->CopyPalette(pPalette);
 	hr = pPalette->GetColorCount(&colorCount);
 
-	ASSERT(srcPixFmtDesc.cstype == CS_IDX && colorCount > 0);
-
 	if (srcPixFmtDesc.cstype == CS_IDX) {
+		ASSERT(colorCount > 0);
 		// specify PixelFormatDesc for indexed format
 		BOOL blackwhite = FALSE;
 		BOOL grayscale = FALSE;
@@ -132,7 +131,6 @@ static void GetPixelFormats(
 		srcPixFmtDesc.cstype = ((blackwhite || grayscale) & !alpha) ? CS_GRAY : CS_RGB;
 	}
 
-	// set PixelFormatDesc for indexed format
 	if (srcPixFmtDesc.cstype == CS_RGB) {
 		if (srcPixFmtDesc.alpha) {
 			convertPixFmt = GUID_WICPixelFormat32bppPBGRA;
