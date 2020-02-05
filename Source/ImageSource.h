@@ -93,7 +93,7 @@ private:
 	UINT m_nBufferSize = 0;
 	CAutoVectorPtr<BYTE> m_pFrameBuffer;
 	CStringA m_ContainerFormat;
-	const PixelFormatDesc* m_pDecodePixFmtDesc = nullptr;
+	PixelFormatDesc m_DecodePixFmtDesc;
 	GUID m_subtype = GUID_NULL;
 
 	HRESULT OnThreadStartPlay();

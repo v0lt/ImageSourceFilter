@@ -204,7 +204,6 @@ CImageStream::CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr)
 	CComPtr<IWICImagingFactory> pWICFactory;
 	CComPtr<IWICBitmapDecoder> pDecoder;
 	CComPtr<IWICBitmapFrameDecode> pFrameDecode;
-	WICPixelFormatGUID pixelFormat = GUID_NULL;
 	WICPixelFormatGUID convertPixFmt = GUID_NULL;
 	CComPtr<IWICBitmapSource> pSource;
 	CComPtr<IWICBitmapScaler> pIScaler;
@@ -268,9 +267,9 @@ CImageStream::CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr)
 	}
 
 	if (SUCCEEDED(hr)) {
-		hr = pFrameDecode->GetPixelFormat(&pixelFormat);
-		m_pDecodePixFmtDesc = GetPixelFormatDesc(pixelFormat);
-		DLog(L"Decode pixel format: %S", m_pDecodePixFmtDesc->str);
+		GetPixelFormats(pWICFactory, pFrameDecode, m_DecodePixFmtDesc, convertPixFmt, m_subtype);
+		DLog(L"Decode pixel format: %S", m_DecodePixFmtDesc.str);
+		DLog(L"Convert pixel format: %S", GetPixelFormatDesc(convertPixFmt)->str);
 	}
 
 	if (SUCCEEDED(hr)) {
@@ -278,14 +277,12 @@ CImageStream::CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr)
 
 		hr = pSource->GetSize(&m_Width, &m_Height);
 		DLogIf(SUCCEEDED(hr), L"Image frame size: %u x %u", m_Width, m_Height);
-
-		GetConvertPixelFormat(m_pDecodePixFmtDesc, convertPixFmt, m_subtype);
 	}
 
 	if (SUCCEEDED(hr)) {
 		IWICBitmapSource *pFrameConvert = nullptr;
 
-		if (!IsEqualGUID(pixelFormat, convertPixFmt)){
+		if (!IsEqualGUID(m_DecodePixFmtDesc.wicpfguid, convertPixFmt)){
 			hr = WICConvertBitmapSource(convertPixFmt, pSource, &pFrameConvert);
 			if (SUCCEEDED(hr)) {
 				pSource = pFrameConvert;

@@ -97,13 +97,59 @@ static const PixelFormatDesc* GetPixelFormatDesc(const WICPixelFormatGUID guid)
 	return &s_UnknownPixelFormatDesc;
 }
 
-static void GetConvertPixelFormat(const PixelFormatDesc* pPixFmtDesc, WICPixelFormatGUID& convertPixFmt, GUID& subtype)
+static void GetPixelFormats(
+	IWICImagingFactory* pWICFactory,
+	IWICBitmapFrameDecode* pFrameDecode,
+	PixelFormatDesc& srcPixFmtDesc,
+	WICPixelFormatGUID& convertPixFmt,
+	GUID& subtype)
 {
-	if (pPixFmtDesc->alpha) {
+	ASSERT(pWICFactory);
+	ASSERT(pFrameDecode);
+
+	WICPixelFormatGUID pixelFormat = GUID_NULL;
+	HRESULT hr = pFrameDecode->GetPixelFormat(&pixelFormat);
+
+	srcPixFmtDesc = *GetPixelFormatDesc(pixelFormat);
+	CComPtr<IWICPalette> pPalette;
+	UINT colorCount = 0;
+	hr = pWICFactory->CreatePalette(&pPalette);
+	hr = pFrameDecode->CopyPalette(pPalette);
+	hr = pPalette->GetColorCount(&colorCount);
+
+	ASSERT(srcPixFmtDesc.cstype == CS_IDX && colorCount > 0);
+
+	if (srcPixFmtDesc.cstype == CS_IDX) {
+		// specify PixelFormatDesc for indexed format
+		BOOL blackwhite = FALSE;
+		BOOL grayscale = FALSE;
+		BOOL alpha = FALSE;
+		hr = pPalette->IsBlackWhite(&blackwhite);
+		hr = pPalette->IsGrayscale(&grayscale);
+		hr = pPalette->HasAlpha(&alpha);
+
+		srcPixFmtDesc.alpha = (alpha == TRUE);
+		srcPixFmtDesc.cstype = ((blackwhite || grayscale) & !alpha) ? CS_GRAY : CS_RGB;
+	}
+
+	// set PixelFormatDesc for indexed format
+	if (srcPixFmtDesc.cstype == CS_RGB) {
+		if (srcPixFmtDesc.alpha) {
+			convertPixFmt = GUID_WICPixelFormat32bppPBGRA;
+			subtype = MEDIASUBTYPE_ARGB32;
+		}
+		else {
+			convertPixFmt = GUID_WICPixelFormat32bppBGR;
+			subtype = MEDIASUBTYPE_RGB32;
+		}
+	}
+	// TODO
+	//else if (srcPixFmtDesc.cstype == CS_GRAY) {
+	//	convertPixFmt = ;
+	//	subtype = ;
+	//}
+	else {
 		convertPixFmt = GUID_WICPixelFormat32bppPBGRA;
 		subtype = MEDIASUBTYPE_ARGB32;
-	} else {
-		convertPixFmt = GUID_WICPixelFormat32bppBGR;
-		subtype = MEDIASUBTYPE_RGB32;
 	}
 }
