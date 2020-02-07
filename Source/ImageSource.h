@@ -86,15 +86,20 @@ private:
 	BOOL m_bFlushing = FALSE;
 
 	std::vector<CMediaType> m_mts;
+	UINT m_imt = 0;
 
+	CComPtr<IWICBitmapSource> m_pBitmap;
+	CComPtr<IWICBitmapSource> m_pBitmap1;
+	CComPtr<IWICBitmapSource> m_pBitmap2;
 	UINT m_Width  = 0;
 	UINT m_Height = 0;
-	UINT m_Stride = 0;
-	UINT m_nBufferSize = 0;
-	CAutoVectorPtr<BYTE> m_pFrameBuffer;
+	UINT m_maxBufferSize = 0;
 	CStringA m_ContainerFormat;
 	PixelFormatDesc m_DecodePixFmtDesc;
-	GUID m_subtype = GUID_NULL;
+	WICPixelFormatGUID m_OuputPixFmt1 = GUID_NULL;
+	WICPixelFormatGUID m_OuputPixFmt2 = GUID_NULL;
+	GUID m_subtype1 = GUID_NULL;
+	GUID m_subtype2 = GUID_NULL;
 
 	HRESULT OnThreadStartPlay();
 	HRESULT OnThreadCreate();
@@ -106,6 +111,8 @@ private:
 	HRESULT ChangeStop();
 	HRESULT ChangeRate() { return S_OK; }
 
+	void SetPixelFormats(IWICImagingFactory* pWICFactory, IWICBitmapFrameDecode* pFrameDecode);
+
 public:
 	CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr);
 	virtual ~CImageStream();
@@ -115,6 +122,7 @@ public:
 	HRESULT DecideBufferSize(IMemAllocator* pIMemAlloc, ALLOCATOR_PROPERTIES* pProperties);
 	HRESULT FillBuffer(IMediaSample* pSample);
 	HRESULT CheckMediaType(const CMediaType* pMediaType);
+	HRESULT SetMediaType(const CMediaType* pMediaType);
 	HRESULT GetMediaType(int iPosition, CMediaType* pmt);
 
 	STDMETHODIMP Notify(IBaseFilter* pSender, Quality q);

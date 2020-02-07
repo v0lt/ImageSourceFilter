@@ -190,13 +190,71 @@ STDMETHODIMP CMpcImageSource::GetInt64(LPCSTR field, __int64 *value)
 // CImageStream
 //
 
+void CImageStream::SetPixelFormats(IWICImagingFactory* pWICFactory, IWICBitmapFrameDecode* pFrameDecode)
+{
+	ASSERT(pWICFactory);
+	ASSERT(pFrameDecode);
+
+	WICPixelFormatGUID pixelFormat = GUID_NULL;
+	HRESULT hr = pFrameDecode->GetPixelFormat(&pixelFormat);
+
+	m_DecodePixFmtDesc = *GetPixelFormatDesc(pixelFormat);
+	CComPtr<IWICPalette> pPalette;
+	UINT colorCount = 0;
+	hr = pWICFactory->CreatePalette(&pPalette);
+	hr = pFrameDecode->CopyPalette(pPalette);
+	hr = pPalette->GetColorCount(&colorCount);
+
+	if (m_DecodePixFmtDesc.cstype == CS_IDX) {
+		ASSERT(colorCount > 0);
+		// specify PixelFormatDesc for indexed format
+		BOOL blackwhite = FALSE;
+		BOOL grayscale = FALSE;
+		BOOL alpha = FALSE;
+		hr = pPalette->IsBlackWhite(&blackwhite);
+		hr = pPalette->IsGrayscale(&grayscale);
+		hr = pPalette->HasAlpha(&alpha);
+
+		m_DecodePixFmtDesc.alpha = (alpha == TRUE);
+		m_DecodePixFmtDesc.cstype = ((blackwhite || grayscale) & !alpha) ? CS_GRAY : CS_RGB;
+	}
+
+	if (m_DecodePixFmtDesc.cstype == CS_RGB) {
+		if (m_DecodePixFmtDesc.cdepth > 8) {
+			m_OuputPixFmt1 = GUID_WICPixelFormat48bppBGR;
+			m_subtype1 = MEDIASUBTYPE_RGB48;
+		}
+		else if (m_DecodePixFmtDesc.alpha) {
+			m_OuputPixFmt1 = GUID_WICPixelFormat32bppPBGRA;
+			m_subtype1 = MEDIASUBTYPE_ARGB32;
+		}
+		else {
+			m_OuputPixFmt1 = GUID_WICPixelFormat32bppBGR;
+			m_subtype1 = MEDIASUBTYPE_RGB32;
+		}
+	}
+	// TODO: else if (srcPixFmtDesc.cstype == CS_GRAY)
+	else {
+		m_OuputPixFmt1 = GUID_WICPixelFormat32bppPBGRA;
+		m_subtype1 = MEDIASUBTYPE_ARGB32;
+	}
+
+	// subtype for compatibility, if necessary
+	if (m_DecodePixFmtDesc.alpha) {
+		m_OuputPixFmt2 = GUID_WICPixelFormat32bppPBGRA;
+		m_subtype2 = MEDIASUBTYPE_ARGB32;
+	}
+	else {
+		m_OuputPixFmt2 = GUID_WICPixelFormat32bppBGR;
+		m_subtype2 = MEDIASUBTYPE_RGB32;
+	}
+}
+
 CImageStream::CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr)
 	: CSourceStream(name, phr, pParent, L"Output")
 	, CSourceSeeking(name, (IPin*)this, phr, &m_cSharedState)
 {
 	CAutoLock cAutoLock(&m_cSharedState);
-
-	m_mts.clear();
 
 	// get a copy of the settings
 	const Settings_t Sets = static_cast<CMpcImageSource*>(pParent)->m_Sets;
@@ -204,8 +262,6 @@ CImageStream::CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr)
 	CComPtr<IWICImagingFactory> pWICFactory;
 	CComPtr<IWICBitmapDecoder> pDecoder;
 	CComPtr<IWICBitmapFrameDecode> pFrameDecode;
-	WICPixelFormatGUID convertPixFmt = GUID_NULL;
-	CComPtr<IWICBitmapSource> pSource;
 	CComPtr<IWICBitmapScaler> pIScaler;
 
 	HRESULT hr = CoCreateInstance(
@@ -267,25 +323,25 @@ CImageStream::CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr)
 	}
 
 	if (SUCCEEDED(hr)) {
-		GetPixelFormats(pWICFactory, pFrameDecode, m_DecodePixFmtDesc, convertPixFmt, m_subtype);
+		SetPixelFormats(pWICFactory, pFrameDecode);
 		DLog(L"Decode pixel format: %S", m_DecodePixFmtDesc.str);
-		DLog(L"Convert pixel format: %S", GetPixelFormatDesc(convertPixFmt)->str);
+		DLog(L"Convert pixel format: %S", GetPixelFormatDesc(m_OuputPixFmt1)->str);
 	}
 
 	if (SUCCEEDED(hr)) {
-		pSource = pFrameDecode;
+		m_pBitmap1 = pFrameDecode;
 
-		hr = pSource->GetSize(&m_Width, &m_Height);
+		hr = m_pBitmap1->GetSize(&m_Width, &m_Height);
 		DLogIf(SUCCEEDED(hr), L"Image frame size: %u x %u", m_Width, m_Height);
 	}
 
 	if (SUCCEEDED(hr)) {
-		IWICBitmapSource *pFrameConvert = nullptr;
-
-		if (!IsEqualGUID(m_DecodePixFmtDesc.wicpfguid, convertPixFmt)){
-			hr = WICConvertBitmapSource(convertPixFmt, pSource, &pFrameConvert);
+		if (!IsEqualGUID(m_DecodePixFmtDesc.wicpfguid, m_OuputPixFmt1)){
+			IWICBitmapSource *pFrameConvert = nullptr;
+			hr = WICConvertBitmapSource(m_OuputPixFmt1, m_pBitmap1, &pFrameConvert);
 			if (SUCCEEDED(hr)) {
-				pSource = pFrameConvert;
+				m_pBitmap1 = pFrameConvert;
+				pFrameConvert->Release();
 			}
 		}
 
@@ -297,7 +353,7 @@ CImageStream::CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr)
 				UINT w = m_Width / divider;
 				UINT h = m_Height / divider;
 
-				hr = pIScaler->Initialize(pSource, w, h, WICBitmapInterpolationModeFant);
+				hr = pIScaler->Initialize(m_pBitmap1, w, h, WICBitmapInterpolationModeFant);
 				if (SUCCEEDED(hr)) {
 					m_Width = w;
 					m_Height = h;
@@ -305,19 +361,9 @@ CImageStream::CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr)
 			}
 		}
 
-		m_Stride = m_Width * 4;
-		m_nBufferSize = m_Stride * m_Height;
-
-		bool ret = m_pFrameBuffer.Allocate(m_nBufferSize);
-		if (ret) {
-			WICRect rc = { 0, 0, m_Width, m_Height };
-			hr = pSource->CopyPixels(&rc, m_Stride, m_nBufferSize, m_pFrameBuffer.m_p);
+		if (!IsEqualGUID(m_OuputPixFmt1, m_OuputPixFmt2)){
+			hr = WICConvertBitmapSource(m_OuputPixFmt2, m_pBitmap1, &m_pBitmap2);
 		}
-		else {
-			hr = E_OUTOFMEMORY;
-		}
-
-		pFrameConvert->Release();
 	}
 
 	if (SUCCEEDED(hr)) {
@@ -328,11 +374,15 @@ CImageStream::CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr)
 			}
 		}
 
+		UINT bitdepth1 = GetPixelFormatDesc(m_OuputPixFmt1)->depth;
+		UINT bufferSize1 = m_Width * m_Height * bitdepth1 / 8;
+
 		CMediaType mt;
 		mt.SetType(&MEDIATYPE_Video);
-		mt.SetSubtype(&m_subtype);
+		mt.SetSubtype(&m_subtype1);
 		mt.SetFormatType(&FORMAT_VideoInfo2);
 		mt.SetTemporalCompression(FALSE);
+		mt.SetSampleSize(bufferSize1);
 
 		VIDEOINFOHEADER2* vih2 = (VIDEOINFOHEADER2*)mt.AllocFormatBuffer(sizeof(VIDEOINFOHEADER2));
 		memset(vih2, 0, sizeof(VIDEOINFOHEADER2));
@@ -343,13 +393,31 @@ CImageStream::CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr)
 		vih2->bmiHeader.biWidth       = m_Width;
 		vih2->bmiHeader.biHeight      = -(long)m_Height;
 		vih2->bmiHeader.biPlanes      = 1;
-		vih2->bmiHeader.biBitCount    = 32;
+		vih2->bmiHeader.biBitCount    = bitdepth1;
 		vih2->bmiHeader.biCompression = BI_RGB;
-		vih2->bmiHeader.biSizeImage   = m_nBufferSize;
-
-		mt.SetSampleSize(vih2->bmiHeader.biSizeImage);
+		vih2->bmiHeader.biSizeImage   = bufferSize1;
 
 		m_mts.push_back(mt);
+
+		m_maxBufferSize = bufferSize1;
+
+		if (m_subtype2 != m_subtype1) {
+			UINT bitdepth2 = GetPixelFormatDesc(m_OuputPixFmt2)->depth;
+			ASSERT(bitdepth2 == 32);
+			UINT bufferSize2 = m_Width * m_Height * bitdepth2 / 8;
+
+			mt.SetSubtype(&m_subtype2);
+			mt.SetSampleSize(bufferSize2);
+
+			vih2->bmiHeader.biBitCount = bitdepth2;
+			vih2->bmiHeader.biSizeImage = bufferSize2;
+
+			m_mts.push_back(mt);
+
+			if (bufferSize2 > m_maxBufferSize) {
+				m_maxBufferSize = bufferSize2;
+			}
+		}
 	}
 
 	*phr = hr;
@@ -461,7 +529,7 @@ HRESULT CImageStream::DecideBufferSize(IMemAllocator* pAlloc, ALLOCATOR_PROPERTI
 	HRESULT hr = NOERROR;
 
 	pProperties->cBuffers = 1;
-	pProperties->cbBuffer = m_nBufferSize;
+	pProperties->cbBuffer = m_maxBufferSize;
 
 	ALLOCATOR_PROPERTIES Actual;
 	if (FAILED(hr = pAlloc->SetProperties(pProperties, &Actual))) {
@@ -487,9 +555,8 @@ HRESULT CImageStream::FillBuffer(IMediaSample* pSample)
 			return S_FALSE;
 		}
 
-		BYTE* pDataIn = m_pFrameBuffer;
 		BYTE* pDataOut = nullptr;
-		if (!pDataIn || FAILED(hr = pSample->GetPointer(&pDataOut)) || !pDataOut) {
+		if (!m_pBitmap1 || FAILED(hr = pSample->GetPointer(&pDataOut)) || !pDataOut) {
 			return S_FALSE;
 		}
 
@@ -511,17 +578,15 @@ HRESULT CImageStream::FillBuffer(IMediaSample* pSample)
 		const UINT w = vih2->bmiHeader.biWidth;
 		const UINT h = abs(vih2->bmiHeader.biHeight);
 		const UINT bpp = vih2->bmiHeader.biBitCount;
+		const UINT stride = w * bpp / 8;
 
-		if (w < m_Width || h != m_Height && bpp != 32 || outSize < (long)m_nBufferSize) {
+		if (w < m_Width || h != m_Height || outSize < (long)vih2->bmiHeader.biSizeImage) {
 			return S_FALSE;
 		}
 
-		UINT dst_pitch = w * 4;
-		int src_pitch = m_Width * 4;
+		hr = m_pBitmap->CopyPixels(nullptr, stride, outSize, pDataOut);
 
-		CopyFrameAsIs(m_Height, pDataOut, dst_pitch, pDataIn, src_pitch);
-
-		pSample->SetActualDataLength(m_nBufferSize);
+		pSample->SetActualDataLength(stride * m_Height);
 
 		REFERENCE_TIME rtStart, rtStop;
 		// The sample times are modified by the current rate.
@@ -562,16 +627,33 @@ HRESULT CImageStream::GetMediaType(int iPosition, CMediaType* pmt)
 HRESULT CImageStream::CheckMediaType(const CMediaType* pmt)
 {
 	if (pmt->majortype == MEDIATYPE_Video
-		&& pmt->subtype == m_subtype
+		&& (pmt->subtype == m_subtype1 || pmt->subtype == m_subtype2)
 		&& pmt->formattype == FORMAT_VideoInfo2) {
 
 		VIDEOINFOHEADER2* vih2 = (VIDEOINFOHEADER2*)pmt->Format();
-		if (vih2->bmiHeader.biWidth >= (long)m_Width && vih2->bmiHeader.biHeight == -(long)m_Height && vih2->bmiHeader.biBitCount == 32) {
+		if (vih2->bmiHeader.biWidth >= (long)m_Width && vih2->bmiHeader.biHeight == -(long)m_Height) {
 			return S_OK;
 		}
 	}
 
 	return E_INVALIDARG;
+}
+
+HRESULT CImageStream::SetMediaType(const CMediaType* pMediaType)
+{
+	HRESULT hr = __super::SetMediaType(pMediaType);
+
+	if (SUCCEEDED(hr)) {
+		DLog(L"SetMediaType with subtype %s", CStringFromGUID(m_mt.subtype));
+		if (m_mt.subtype == m_subtype1) {
+			m_pBitmap = m_pBitmap1;
+		}
+		else if (m_mt.subtype == m_subtype2) {
+			m_pBitmap = m_pBitmap2;
+		}
+	}
+
+	return hr;
 }
 
 STDMETHODIMP CImageStream::Notify(IBaseFilter* pSender, Quality q)
