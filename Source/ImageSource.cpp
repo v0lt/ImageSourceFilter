@@ -220,26 +220,43 @@ void CImageStream::SetPixelFormats(IWICImagingFactory* pWICFactory, IWICBitmapFr
 	}
 
 	if (m_DecodePixFmtDesc.cstype == CS_RGB) {
-		if (m_DecodePixFmtDesc.cdepth > 8) {
-			m_OuputPixFmt1 = GUID_WICPixelFormat48bppBGR;
-			m_subtype1 = MEDIASUBTYPE_RGB48;
-		}
-		else if (m_DecodePixFmtDesc.alpha) {
-			m_OuputPixFmt1 = GUID_WICPixelFormat32bppPBGRA;
-			m_subtype1 = MEDIASUBTYPE_ARGB32;
+		if (m_DecodePixFmtDesc.cdepth <= 8) {
+			if (m_DecodePixFmtDesc.alpha) {
+				m_OuputPixFmt1 = GUID_WICPixelFormat32bppPBGRA;
+				m_subtype1 = MEDIASUBTYPE_ARGB32;
+			}
+			else {
+				m_OuputPixFmt1 = GUID_WICPixelFormat32bppBGR;
+				m_subtype1 = MEDIASUBTYPE_RGB32;
+			}
 		}
 		else {
-			m_OuputPixFmt1 = GUID_WICPixelFormat32bppBGR;
-			m_subtype1 = MEDIASUBTYPE_RGB32;
+			if (m_DecodePixFmtDesc.alpha) {
+				m_OuputPixFmt1 = GUID_WICPixelFormat64bppPBGRA;
+				m_subtype1 = MEDIASUBTYPE_ARGB64;
+			}
+			else {
+				m_OuputPixFmt1 = GUID_WICPixelFormat48bppBGR;
+				m_subtype1 = MEDIASUBTYPE_RGB48;
+			}
 		}
 	}
-	// TODO: else if (srcPixFmtDesc.cstype == CS_GRAY)
+	else if (m_DecodePixFmtDesc.cstype == CS_GRAY) {
+		if (m_DecodePixFmtDesc.cdepth <= 8) {
+			m_OuputPixFmt1 = GUID_WICPixelFormat8bppGray;
+			m_subtype1 = MEDIASUBTYPE_Y800;
+		}
+		else {
+			m_OuputPixFmt1 = GUID_WICPixelFormat16bppGray;
+			m_subtype1 = MEDIASUBTYPE_Y116;
+		}
+	}
 	else {
 		m_OuputPixFmt1 = GUID_WICPixelFormat32bppPBGRA;
 		m_subtype1 = MEDIASUBTYPE_ARGB32;
 	}
 
-	// subtype for compatibility, if necessary
+	// subtype for compatibility
 	if (m_DecodePixFmtDesc.alpha) {
 		m_OuputPixFmt2 = GUID_WICPixelFormat32bppPBGRA;
 		m_subtype2 = MEDIASUBTYPE_ARGB32;
