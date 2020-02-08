@@ -51,11 +51,42 @@ int g_cTemplates = std::size(g_Templates);
 
 STDAPI DllRegisterServer()
 {
+	const struct {
+		LPCWSTR name;
+		LPCWSTR data;
+	} values[] {
+		{ L"0", L"0,8,,89504E470D0A1A0A" },   // PNG
+		{ L"1", L"0,4,,49492A00" },           // TIFF
+		// This does not work for BMP and JPEG. "Generate Still Video" still connects.
+		{ L"2", L"0,3,,FFD8FF" },             // JPEG
+		//{ L"3", L"0,2,,424D,6,4,,00000000" }, // BMP
+		{ L"Source Filter", L"{7DB5C3B3-2419-4508-B1D0-F2D22DA8E439}" },
+	};
+
+	HKEY hKey;
+	LONG ec = ::RegCreateKeyExW(HKEY_CLASSES_ROOT, L"Media Type\\{e436eb83-524f-11ce-9f53-0020af0ba770}\\{7DB5C3B3-2419-4508-B1D0-F2D22DA8E439}", 0, 0, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, 0, &hKey, 0);
+	if (ec == ERROR_SUCCESS) {
+		for (const auto& value : values) {
+			ec = ::RegSetValueExW(hKey, value.name, 0, REG_SZ,
+				reinterpret_cast<BYTE*>(const_cast<LPWSTR>(value.data)),
+				(DWORD)(wcslen(value.data) + 1) * sizeof(WCHAR));
+		}
+
+		::RegCloseKey(hKey);
+	}
+
 	return AMovieDllRegisterServer2(TRUE);
 }
 
 STDAPI DllUnregisterServer()
 {
+	HKEY hKey;
+	LONG ec = ::RegOpenKeyExW(HKEY_CLASSES_ROOT, L"Media Type\\{e436eb83-524f-11ce-9f53-0020af0ba770}", 0, KEY_ALL_ACCESS, &hKey);
+	if (ec == ERROR_SUCCESS) {
+		ec = ::RegDeleteKeyW(hKey, L"{7DB5C3B3-2419-4508-B1D0-F2D22DA8E439}");
+		::RegCloseKey(hKey);
+	}
+
 	return AMovieDllRegisterServer2(FALSE);
 }
 
