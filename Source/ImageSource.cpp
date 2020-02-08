@@ -275,6 +275,7 @@ CImageStream::CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr)
 
 	// get a copy of the settings
 	const Settings_t Sets = static_cast<CMpcImageSource*>(pParent)->m_Sets;
+	m_bEnableSeeking = (Sets.iImageDuration > 0);
 
 	CComPtr<IWICImagingFactory> pWICFactory;
 	CComPtr<IWICBitmapDecoder> pDecoder;
@@ -449,7 +450,7 @@ STDMETHODIMP CImageStream::NonDelegatingQueryInterface(REFIID riid, void** ppv)
 {
 	CheckPointer(ppv, E_POINTER);
 
-	return (riid == IID_IMediaSeeking) ? CSourceSeeking::NonDelegatingQueryInterface(riid, ppv)
+	return (riid == IID_IMediaSeeking && m_bEnableSeeking) ? CSourceSeeking::NonDelegatingQueryInterface(riid, ppv)
 		: CSourceStream::NonDelegatingQueryInterface(riid, ppv);
 }
 

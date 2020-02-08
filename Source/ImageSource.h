@@ -85,8 +85,8 @@ private:
 	BOOL m_bDiscontinuity = FALSE;
 	BOOL m_bFlushing = FALSE;
 
+	bool m_bEnableSeeking = false;
 	std::vector<CMediaType> m_mts;
-	UINT m_imt = 0;
 
 	CComPtr<IWICBitmapSource> m_pBitmap;
 	CComPtr<IWICBitmapSource> m_pBitmap1;
