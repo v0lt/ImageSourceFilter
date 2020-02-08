@@ -55,11 +55,13 @@ STDAPI DllRegisterServer()
 		LPCWSTR name;
 		LPCWSTR data;
 	} values[] {
-		{ L"0", L"0,8,,89504E470D0A1A0A" },   // PNG
-		{ L"1", L"0,4,,49492A00" },           // TIFF
+		{ L"0", L"0,8,,89504E470D0A1A0A" },       // PNG
+		{ L"1", L"0,4,,49492A00" },               // TIFF
+		{ L"2", L"0,4,,4949BC01" },               // HD Photo/JPEG XR
+		{ L"3", L"0,4,,52494646,8,4,,57454250" }, // WebP
 		// This does not work for BMP and JPEG. "Generate Still Video" still connects.
-		{ L"2", L"0,3,,FFD8FF" },             // JPEG
-		//{ L"3", L"0,2,,424D,6,4,,00000000" }, // BMP
+		//{ L"4", L"0,3,,FFD8FF" },             // JPEG
+		//{ L"5", L"0,2,,424D,6,4,,00000000" }, // BMP
 		{ L"Source Filter", L"{7DB5C3B3-2419-4508-B1D0-F2D22DA8E439}" },
 	};
 
