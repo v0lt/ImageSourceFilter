@@ -61,9 +61,9 @@ CStringW GetVersionStr()
 {
 	CStringW version;
 #if MPCIS_RELEASE
-	version.Format(L"v%S", MPCIS_VERSION_STR);
+	version.Format(L"%S", MPCIS_VERSION_STR);
 #else
-	version.Format(L"v%S (git-%S-%S)",
+	version.Format(L"%S (git-%S-%S)",
 		MPCIS_VERSION_STR,
 		_CRT_STRINGIZE(MPCIS_REV_DATE),
 		_CRT_STRINGIZE(MPCIS_REV_HASH)

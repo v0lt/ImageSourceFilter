@@ -150,7 +150,7 @@ HRESULT CISMainPPage::OnActivate()
 	m_hWnd = m_hwnd;
 
 	m_pImageSource->GetSettings(m_SetsPP);
-	
+
 	SendDlgItemMessageW(IDC_SLIDER1, TBM_SETRANGE, 0, MAKELONG(1, 11));
 	SendDlgItemMessageW(IDC_SLIDER1, TBM_SETTICFREQ, 1, 0);
 	SendDlgItemMessageW(IDC_SLIDER2, TBM_SETRANGE, 0, MAKELONG(1, 4));
