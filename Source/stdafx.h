@@ -28,15 +28,16 @@
 #define VC_EXTRALEAN        // Exclude rarely-used stuff from Windows headers
 
 #include <atlbase.h>
-#include <atlstr.h>
 #include <atlwin.h>
 
 #include <dmodshow.h>
 #include <dvdmedia.h>
-#include "../BaseClasses/streams.h"
 #include <VersionHelpers.h>
 #include <wincodec.h>
 
 #include <algorithm>
 #include <numeric>
 #include <vector>
+
+#include "../BaseClasses/streams.h"
+#include "../external/fmt/include/fmt/format.h"

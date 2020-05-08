@@ -90,13 +90,13 @@ void CISMainPPage::SetDurationToSlider()
 
 void CISMainPPage::SetDurationToEdit()
 {
-	CStringW str;
+	std::wstring str;
 	if (m_SetsPP.iImageDuration >= 1 && m_SetsPP.iImageDuration <= 10) {
-		str.Format(L"%d", m_SetsPP.iImageDuration);
+		str = std::to_wstring(m_SetsPP.iImageDuration);
 	} else {
 		str= L"unlimited";
 	}
-	SetDlgItemTextW(IDC_EDIT1, str);
+	SetDlgItemTextW(IDC_EDIT1, str.c_str());
 }
 
 int CISMainPPage::GetDurationFromSlider()
@@ -107,9 +107,8 @@ int CISMainPPage::GetDurationFromSlider()
 
 void CISMainPPage::SetDimensionToEdit()
 {
-	CStringW str;
-	str.Format(L"%u", m_SetsPP.iMaxDimension);
-	SetDlgItemTextW(IDC_EDIT2, str);
+	std::wstring str = std::to_wstring(m_SetsPP.iMaxDimension);
+	SetDlgItemTextW(IDC_EDIT2, str.c_str());
 }
 
 void CISMainPPage::SetControls()

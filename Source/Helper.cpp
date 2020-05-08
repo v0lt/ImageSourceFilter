@@ -57,37 +57,34 @@ LPCWSTR GetWindowsVersion()
 	return L"Vista or older";
 }
 
-CStringW GetVersionStr()
+std::wstring GetVersionStr()
 {
-	CStringW version;
-#if MPCIS_RELEASE
-	version.Format(L"%S", MPCIS_VERSION_STR);
-#else
-	version.Format(L"%S (git-%S-%S)",
-		MPCIS_VERSION_STR,
-		_CRT_STRINGIZE(MPCIS_REV_DATE),
-		_CRT_STRINGIZE(MPCIS_REV_HASH)
+	std::wstring version = _CRT_WIDE(MPCIS_VERSION_STR);
+#if MPCIS_RELEASE != 1
+	version += fmt::format(L" (git-{}-{})",
+		_CRT_WIDE(_CRT_STRINGIZE(MPCIS_REV_DATE)),
+		_CRT_WIDE(_CRT_STRINGIZE(MPCIS_REV_HASH))
 	);
 #endif
 #ifdef _WIN64
-	version.Append(L" x64");
+	version.append(L" x64");
 #endif
 #ifdef _DEBUG
-	version.Append(L" DEBUG");
+	version.append(L" DEBUG");
 #endif
 	return version;
 }
 
 LPCWSTR GetNameAndVersion()
 {
-	static CStringW version = L"MPC Image Source " + GetVersionStr();
+	static std::wstring version = L"MPC Image Source " + GetVersionStr();
 
-	return (LPCWSTR)version;
+	return version.c_str();
 }
 
-CStringW HR2Str(const HRESULT hr)
+std::wstring HR2Str(const HRESULT hr)
 {
-	CStringW str;
+	std::wstring str;
 #define UNPACK_VALUE(VALUE) case VALUE: str = L#VALUE; break;
 #define UNPACK_HR_WIN32(VALUE) case (((VALUE) & 0x0000FFFF) | (FACILITY_WIN32 << 16) | 0x80000000): str = L#VALUE; break;
 	switch (hr) {
@@ -107,7 +104,7 @@ CStringW HR2Str(const HRESULT hr)
 		// some System Error Codes
 		UNPACK_HR_WIN32(ERROR_INVALID_WINDOW_HANDLE);
 	default:
-		str.Format(L"0x%08x", hr);
+		str = fmt::format(L"{:#010x}", hr);
 	};
 #undef UNPACK_VALUE
 #undef UNPACK_HR_WIN32

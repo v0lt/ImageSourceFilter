@@ -74,16 +74,16 @@ inline T round_pow2(T number, T pow2)
 LPCWSTR GetWindowsVersion();
 LPCWSTR GetNameAndVersion();
 
-inline CStringW CStringFromGUID(const GUID& guid)
+inline std::wstring GUIDtoWString(const GUID& guid)
 {
-	WCHAR buff[40] = {};
+	WCHAR buff[40];
 	if (StringFromGUID2(guid, buff, 39) <= 0) {
 		StringFromGUID2(GUID_NULL, buff, 39);
 	}
-	return CStringW(buff);
+	return std::wstring(buff);
 }
 
-CStringW HR2Str(const HRESULT hr);
+std::wstring HR2Str(const HRESULT hr);
 
 void CopyFrameAsIs(const UINT height, BYTE* dst, UINT dst_pitch, const BYTE* src, int src_pitch);
 

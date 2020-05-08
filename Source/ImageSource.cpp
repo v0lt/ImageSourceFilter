@@ -107,13 +107,13 @@ STDMETHODIMP CMpcImageSource::GetCurFile(LPOLESTR* ppszFileName, AM_MEDIA_TYPE* 
 {
 	CheckPointer(ppszFileName, E_POINTER);
 
-	size_t nCount = m_fn.GetLength() + 1;
+	size_t nCount = m_fn.size() + 1;
 	*ppszFileName = (LPOLESTR)CoTaskMemAlloc(nCount * sizeof(WCHAR));
 	if (!(*ppszFileName)) {
 		return E_OUTOFMEMORY;
 	}
 
-	wcscpy_s(*ppszFileName, nCount, m_fn);
+	wcscpy_s(*ppszFileName, nCount, m_fn.c_str());
 
 	return S_OK;
 }
@@ -292,7 +292,7 @@ CImageStream::CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr)
 
 #ifdef _DEBUG
 	{
-		CStringW dbgstr("WIC Decoders:");
+		std::wstring dbgstr(L"WIC Decoders:");
 		CComPtr<IEnumUnknown> pEnum;
 		DWORD dwOptions = WICComponentEnumerateDefault;
 		HRESULT hr2 = pWICFactory->CreateComponentEnumerator(WICDecoder, dwOptions, &pEnum);
@@ -306,18 +306,18 @@ CImageStream::CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr)
 				// Codec name
 				hr2 = pCodecInfo->GetFriendlyName(std::size(buffer)-1, buffer, &cbActual);
 				if (SUCCEEDED(hr2)) {
-					dbgstr.AppendFormat(L"\n  %s", buffer);
+					dbgstr += fmt::format(L"\n  {}", buffer);
 					// File extensions
 					hr2 = pCodecInfo->GetFileExtensions(std::size(buffer) - 1, buffer, &cbActual);
 					if (SUCCEEDED(hr2)) {
-						dbgstr.AppendFormat(L" (%s)", buffer);
+						dbgstr += fmt::format(L" {}", buffer);
 					}
 				}
 				pElement = nullptr;
 			}
 		}
 
-		DLog(dbgstr);
+		DLog(dbgstr.c_str());
 	}
 #endif
 
@@ -335,7 +335,7 @@ CImageStream::CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr)
 		GUID containerFormat = GUID_NULL;
 		pDecoder->GetContainerFormat(&containerFormat);
 		m_ContainerFormat = ContainerFormat2Str(containerFormat);
-		DLog(L"Container format: %S", m_ContainerFormat);
+		DLog(L"Container format: %S", m_ContainerFormat.c_str());
 
 		hr = pDecoder->GetFrame(0, &pFrameDecode);
 	}
@@ -662,7 +662,7 @@ HRESULT CImageStream::SetMediaType(const CMediaType* pMediaType)
 	HRESULT hr = __super::SetMediaType(pMediaType);
 
 	if (SUCCEEDED(hr)) {
-		DLog(L"SetMediaType with subtype %s", CStringFromGUID(m_mt.subtype));
+		DLog(L"SetMediaType with subtype %s", GUIDtoWString(m_mt.subtype).c_str());
 		if (m_mt.subtype == m_subtype1) {
 			m_pBitmap = m_pBitmap1;
 		}

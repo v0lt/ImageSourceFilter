@@ -41,7 +41,7 @@ private:
 	// Options
 	Settings_t m_Sets;
 
-	CStringW m_fn;
+	std::wstring m_fn;
 
 public:
 	CMpcImageSource(LPUNKNOWN lpunk, HRESULT* phr);
@@ -94,7 +94,7 @@ private:
 	UINT m_Width  = 0;
 	UINT m_Height = 0;
 	UINT m_maxBufferSize = 0;
-	CStringA m_ContainerFormat;
+	std::string m_ContainerFormat;
 	PixelFormatDesc m_DecodePixFmtDesc;
 	WICPixelFormatGUID m_OuputPixFmt1 = GUID_NULL;
 	WICPixelFormatGUID m_OuputPixFmt2 = GUID_NULL;
