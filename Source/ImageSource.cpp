@@ -248,7 +248,7 @@ void CImageStream::SetPixelFormats(IWICImagingFactory* pWICFactory, IWICBitmapFr
 		}
 		else {
 			m_OuputPixFmt1 = GUID_WICPixelFormat16bppGray;
-			m_subtype1 = MEDIASUBTYPE_Y116;
+			m_subtype1 = MEDIASUBTYPE_Y16;
 		}
 	}
 	else {
