@@ -75,7 +75,8 @@
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="ImageSource.cpp" />
-    <ClCompile Include="StringHelper.cpp" />
+    <ClCompile Include="Utils\StringUtil.cpp" />
+    <ClCompile Include="Utils\Util.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Helper.h" />
@@ -84,7 +85,8 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="ImageSource.h" />
-    <ClInclude Include="StringHelper.h" />
+    <ClInclude Include="Utils\StringUtil.h" />
+    <ClInclude Include="Utils\Util.h" />
     <ClInclude Include="WICHelper.h" />
   </ItemGroup>
   <ItemGroup>

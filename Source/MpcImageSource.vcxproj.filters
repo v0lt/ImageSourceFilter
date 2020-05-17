@@ -13,6 +13,9 @@
       <UniqueIdentifier>{addff0d6-0d94-4e4c-b5ea-b7d5b330fd45}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe</Extensions>
     </Filter>
+    <Filter Include="Utils">
+      <UniqueIdentifier>{1b1d21a7-ecf8-4aa9-a806-84c53bf5e712}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -30,8 +33,11 @@
     <ClCompile Include="ImageSource.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="StringHelper.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Utils\StringUtil.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Utils\Util.cpp">
+      <Filter>Utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -56,8 +62,11 @@
     <ClInclude Include="WICHelper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="StringHelper.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Utils\StringUtil.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils\Util.h">
+      <Filter>Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
