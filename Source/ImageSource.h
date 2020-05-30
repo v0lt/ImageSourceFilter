@@ -94,7 +94,7 @@ private:
 	UINT m_Width  = 0;
 	UINT m_Height = 0;
 	UINT m_maxBufferSize = 0;
-	std::string m_ContainerFormat;
+	std::wstring m_ContainerFormat;
 	PixelFormatDesc m_DecodePixFmtDesc;
 	WICPixelFormatGUID m_OuputPixFmt1 = GUID_NULL;
 	WICPixelFormatGUID m_OuputPixFmt2 = GUID_NULL;

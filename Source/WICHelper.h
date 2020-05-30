@@ -27,30 +27,30 @@ enum ColorSystem_t {
 	CS_IDX
 };
 
-static const char* ContainerFormat2Str(const GUID guid)
+static const wchar_t* ContainerFormat2Str(const GUID guid)
 {
-	const char* pStr;
+	const wchar_t* pStr;
 
-	if (guid == GUID_ContainerFormatBmp)       { pStr = "BMP"; }
-	else if (guid == GUID_ContainerFormatPng)  { pStr = "PNG"; }
-	else if (guid == GUID_ContainerFormatIco)  { pStr = "ICO"; }
-	else if (guid == GUID_ContainerFormatJpeg) { pStr = "JPEG"; }
-	else if (guid == GUID_ContainerFormatTiff) { pStr = "TIFF"; }
-	else if (guid == GUID_ContainerFormatGif)  { pStr = "GIF"; }
-	else if (guid == GUID_ContainerFormatWmp)  { pStr = "HD Photo/JPEG XR"; }
-	else if (guid == GUID_ContainerFormatDds)  { pStr = "DDS"; }
-//	else if (guid == GUID_ContainerFormatAdng) { pStr = "DNG"; }
-//	else if (guid == GUID_ContainerFormatHeif) { pStr = "HEIF"; }
-//	else if (guid == GUID_ContainerFormatWebp) { pStr = "WebP"; }
-//	else if (guid == GUID_ContainerFormatRaw)  { pStr = "RAW"; }
-	else { pStr = "Unknown"; }
+	if (guid == GUID_ContainerFormatBmp)       { pStr = L"BMP"; }
+	else if (guid == GUID_ContainerFormatPng)  { pStr = L"PNG"; }
+	else if (guid == GUID_ContainerFormatIco)  { pStr = L"ICO"; }
+	else if (guid == GUID_ContainerFormatJpeg) { pStr = L"JPEG"; }
+	else if (guid == GUID_ContainerFormatTiff) { pStr = L"TIFF"; }
+	else if (guid == GUID_ContainerFormatGif)  { pStr = L"GIF"; }
+	else if (guid == GUID_ContainerFormatWmp)  { pStr = L"HD Photo/JPEG XR"; }
+	else if (guid == GUID_ContainerFormatDds)  { pStr = L"DDS"; }
+//	else if (guid == GUID_ContainerFormatAdng) { pStr = L"DNG"; }
+//	else if (guid == GUID_ContainerFormatHeif) { pStr = L"HEIF"; }
+//	else if (guid == GUID_ContainerFormatWebp) { pStr = L"WebP"; }
+//	else if (guid == GUID_ContainerFormatRaw)  { pStr = L"RAW"; }
+	else { pStr = L"Unknown"; }
 
 	return pStr;
 }
 
 struct PixelFormatDesc {
 	WICPixelFormatGUID wicpfguid = GUID_NULL;
-	const char*        str       = nullptr;
+	const wchar_t*     str       = nullptr;
 	int                cdepth    = 8;
 	int                depth     = 32;
 	ColorSystem_t      cstype    = CS_RGB;
@@ -60,32 +60,32 @@ struct PixelFormatDesc {
 static const PixelFormatDesc s_UnknownPixelFormatDesc = {};
 
 static const PixelFormatDesc s_PixelFormatDescs[] = {
-	{ GUID_WICPixelFormat1bppIndexed, "1bppIndexed",  8,  1, CS_IDX,  true  },
-	{ GUID_WICPixelFormat2bppIndexed, "2bppIndexed",  8,  2, CS_IDX,  true  },
-	{ GUID_WICPixelFormat4bppIndexed, "4bppIndexed",  8,  4, CS_IDX,  true  },
-	{ GUID_WICPixelFormat8bppIndexed, "8bppIndexed",  8,  8, CS_IDX,  true  },
-	{ GUID_WICPixelFormatBlackWhite , "BlackWhite",   1,  1, CS_GRAY, false },
-	{ GUID_WICPixelFormat2bppGray,    "2bppGray",     2,  2, CS_GRAY, false },
-	{ GUID_WICPixelFormat4bppGray,    "4bppGray",     4,  4, CS_GRAY, false },
-	{ GUID_WICPixelFormat8bppGray,    "8bppGray",     8,  8, CS_GRAY, false },
-	{ GUID_WICPixelFormat16bppBGR555, "16bppBGR555",  5, 16, CS_RGB,  false },
-	{ GUID_WICPixelFormat16bppBGR565, "16bppBGR565",  6, 16, CS_RGB,  false },
-	{ GUID_WICPixelFormat16bppGray,   "16bppGray",   16, 16, CS_GRAY, false },
-	{ GUID_WICPixelFormat24bppBGR,    "24bppBGR",     8, 24, CS_RGB,  false },
-	{ GUID_WICPixelFormat24bppRGB,    "24bppRGB",     8, 24, CS_RGB,  false },
-	{ GUID_WICPixelFormat32bppBGR,    "32bppBGR",     8, 32, CS_RGB,  false },
-	{ GUID_WICPixelFormat32bppBGRA,   "32bppBGRA",    8, 32, CS_RGB,  true  },
-	{ GUID_WICPixelFormat32bppPBGRA,  "32bppPBGRA",   8, 32, CS_RGB,  true  },
-	{ GUID_WICPixelFormat32bppRGB,    "32bppRGB",     8, 32, CS_RGB,  false },
-	{ GUID_WICPixelFormat32bppRGBA,   "32bppRGBA",    8, 32, CS_RGB,  true  },
-	{ GUID_WICPixelFormat32bppPRGBA,  "32bppPRGBA",   8, 32, CS_RGB,  true  },
-	{ GUID_WICPixelFormat48bppRGB,    "48bppRGB",    16, 48, CS_RGB,  false },
-	{ GUID_WICPixelFormat48bppBGR,    "48bppBGR",    16, 48, CS_RGB,  false },
-	{ GUID_WICPixelFormat64bppRGB,    "64bppRGB",    16, 64, CS_RGB,  false },
-	{ GUID_WICPixelFormat64bppRGBA,   "64bppRGBA",   16, 64, CS_RGB,  true  },
-	{ GUID_WICPixelFormat64bppBGRA,   "64bppBGRA",   16, 64, CS_RGB,  true  },
-	{ GUID_WICPixelFormat64bppPRGBA,  "64bppPRGBA",  16, 64, CS_RGB,  true  },
-	{ GUID_WICPixelFormat64bppPBGRA,  "64bppPBGRA",  16, 64, CS_RGB,  true  },
+	{ GUID_WICPixelFormat1bppIndexed, L"1bppIndexed",  8,  1, CS_IDX,  true  },
+	{ GUID_WICPixelFormat2bppIndexed, L"2bppIndexed",  8,  2, CS_IDX,  true  },
+	{ GUID_WICPixelFormat4bppIndexed, L"4bppIndexed",  8,  4, CS_IDX,  true  },
+	{ GUID_WICPixelFormat8bppIndexed, L"8bppIndexed",  8,  8, CS_IDX,  true  },
+	{ GUID_WICPixelFormatBlackWhite , L"BlackWhite",   1,  1, CS_GRAY, false },
+	{ GUID_WICPixelFormat2bppGray,    L"2bppGray",     2,  2, CS_GRAY, false },
+	{ GUID_WICPixelFormat4bppGray,    L"4bppGray",     4,  4, CS_GRAY, false },
+	{ GUID_WICPixelFormat8bppGray,    L"8bppGray",     8,  8, CS_GRAY, false },
+	{ GUID_WICPixelFormat16bppBGR555, L"16bppBGR555",  5, 16, CS_RGB,  false },
+	{ GUID_WICPixelFormat16bppBGR565, L"16bppBGR565",  6, 16, CS_RGB,  false },
+	{ GUID_WICPixelFormat16bppGray,   L"16bppGray",   16, 16, CS_GRAY, false },
+	{ GUID_WICPixelFormat24bppBGR,    L"24bppBGR",     8, 24, CS_RGB,  false },
+	{ GUID_WICPixelFormat24bppRGB,    L"24bppRGB",     8, 24, CS_RGB,  false },
+	{ GUID_WICPixelFormat32bppBGR,    L"32bppBGR",     8, 32, CS_RGB,  false },
+	{ GUID_WICPixelFormat32bppBGRA,   L"32bppBGRA",    8, 32, CS_RGB,  true  },
+	{ GUID_WICPixelFormat32bppPBGRA,  L"32bppPBGRA",   8, 32, CS_RGB,  true  },
+	{ GUID_WICPixelFormat32bppRGB,    L"32bppRGB",     8, 32, CS_RGB,  false },
+	{ GUID_WICPixelFormat32bppRGBA,   L"32bppRGBA",    8, 32, CS_RGB,  true  },
+	{ GUID_WICPixelFormat32bppPRGBA,  L"32bppPRGBA",   8, 32, CS_RGB,  true  },
+	{ GUID_WICPixelFormat48bppRGB,    L"48bppRGB",    16, 48, CS_RGB,  false },
+	{ GUID_WICPixelFormat48bppBGR,    L"48bppBGR",    16, 48, CS_RGB,  false },
+	{ GUID_WICPixelFormat64bppRGB,    L"64bppRGB",    16, 64, CS_RGB,  false },
+	{ GUID_WICPixelFormat64bppRGBA,   L"64bppRGBA",   16, 64, CS_RGB,  true  },
+	{ GUID_WICPixelFormat64bppBGRA,   L"64bppBGRA",   16, 64, CS_RGB,  true  },
+	{ GUID_WICPixelFormat64bppPRGBA,  L"64bppPRGBA",  16, 64, CS_RGB,  true  },
+	{ GUID_WICPixelFormat64bppPBGRA,  L"64bppPBGRA",  16, 64, CS_RGB,  true  },
 };
 
 static const PixelFormatDesc* GetPixelFormatDesc(const WICPixelFormatGUID guid)

@@ -335,15 +335,15 @@ CImageStream::CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr)
 		GUID containerFormat = GUID_NULL;
 		pDecoder->GetContainerFormat(&containerFormat);
 		m_ContainerFormat = ContainerFormat2Str(containerFormat);
-		DLog(L"Container format: %S", m_ContainerFormat.c_str());
+		DLog(L"Container format: %s", m_ContainerFormat);
 
 		hr = pDecoder->GetFrame(0, &pFrameDecode);
 	}
 
 	if (SUCCEEDED(hr)) {
 		SetPixelFormats(pWICFactory, pFrameDecode);
-		DLog(L"Decode pixel format: %S", m_DecodePixFmtDesc.str);
-		DLog(L"Convert pixel format: %S", GetPixelFormatDesc(m_OuputPixFmt1)->str);
+		DLog(L"Decode pixel format: %s", m_DecodePixFmtDesc.str);
+		DLog(L"Convert pixel format: %s", GetPixelFormatDesc(m_OuputPixFmt1)->str);
 	}
 
 	if (SUCCEEDED(hr)) {
@@ -662,7 +662,7 @@ HRESULT CImageStream::SetMediaType(const CMediaType* pMediaType)
 	HRESULT hr = __super::SetMediaType(pMediaType);
 
 	if (SUCCEEDED(hr)) {
-		DLog(L"SetMediaType with subtype %s", GUIDtoWString(m_mt.subtype).c_str());
+		DLog(L"SetMediaType with subtype %s", GUIDtoWString(m_mt.subtype));
 		if (m_mt.subtype == m_subtype1) {
 			m_pBitmap = m_pBitmap1;
 		}
