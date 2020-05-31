@@ -39,7 +39,7 @@ CMpcImageSource::CMpcImageSource(LPUNKNOWN lpunk, HRESULT* phr)
 	DbgSetModuleLevel(LOG_ERROR, DWORD_MAX);
 #endif
 
-	DLog(L"Windows %s", GetWindowsVersion());
+	DLog(L"Windows {}", GetWindowsVersion());
 	DLog(GetNameAndVersion());
 
 	if (phr) {
@@ -335,22 +335,22 @@ CImageStream::CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr)
 		GUID containerFormat = GUID_NULL;
 		pDecoder->GetContainerFormat(&containerFormat);
 		m_ContainerFormat = ContainerFormat2Str(containerFormat);
-		DLog(L"Container format: %s", m_ContainerFormat);
+		DLog(L"Container format: {}", m_ContainerFormat);
 
 		hr = pDecoder->GetFrame(0, &pFrameDecode);
 	}
 
 	if (SUCCEEDED(hr)) {
 		SetPixelFormats(pWICFactory, pFrameDecode);
-		DLog(L"Decode pixel format: %s", m_DecodePixFmtDesc.str);
-		DLog(L"Convert pixel format: %s", GetPixelFormatDesc(m_OuputPixFmt1)->str);
+		DLog(L"Decode pixel format: {}", m_DecodePixFmtDesc.str);
+		DLog(L"Convert pixel format: {}", GetPixelFormatDesc(m_OuputPixFmt1)->str);
 	}
 
 	if (SUCCEEDED(hr)) {
 		m_pBitmap1 = pFrameDecode;
 
 		hr = m_pBitmap1->GetSize(&m_Width, &m_Height);
-		DLogIf(SUCCEEDED(hr), L"Image frame size: %u x %u", m_Width, m_Height);
+		DLogIf(SUCCEEDED(hr), L"Image frame size: {} x {}", m_Width, m_Height);
 	}
 
 	if (SUCCEEDED(hr)) {
@@ -662,7 +662,7 @@ HRESULT CImageStream::SetMediaType(const CMediaType* pMediaType)
 	HRESULT hr = __super::SetMediaType(pMediaType);
 
 	if (SUCCEEDED(hr)) {
-		DLog(L"SetMediaType with subtype %s", GUIDtoWString(m_mt.subtype));
+		DLog(L"SetMediaType with subtype {}", GUIDtoWString(m_mt.subtype));
 		if (m_mt.subtype == m_subtype1) {
 			m_pBitmap = m_pBitmap1;
 		}
