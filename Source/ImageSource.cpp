@@ -317,7 +317,7 @@ CImageStream::CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr)
 			}
 		}
 
-		DLog(dbgstr.c_str());
+		DLog(dbgstr);
 	}
 #endif
 
