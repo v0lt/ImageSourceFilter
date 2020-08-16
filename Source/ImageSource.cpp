@@ -216,7 +216,7 @@ void CImageStream::SetPixelFormats(IWICImagingFactory* pWICFactory, IWICBitmapFr
 		hr = pPalette->HasAlpha(&alpha);
 
 		m_DecodePixFmtDesc.alpha = (alpha == TRUE);
-		m_DecodePixFmtDesc.cstype = ((blackwhite || grayscale) & !alpha) ? CS_GRAY : CS_RGB;
+		m_DecodePixFmtDesc.cstype = ((blackwhite || grayscale) && !alpha) ? CS_GRAY : CS_RGB;
 	}
 
 	if (m_DecodePixFmtDesc.cstype == CS_RGB) {
@@ -298,9 +298,9 @@ CImageStream::CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr)
 		HRESULT hr2 = pWICFactory->CreateComponentEnumerator(WICDecoder, dwOptions, &pEnum);
 		if (SUCCEEDED(hr2)) {
 			WCHAR buffer[256]; // if not enough will be truncated
-			ULONG cbActual = 0;
+			ULONG cbFetched = 0;
 			CComPtr<IUnknown> pElement = nullptr;
-			while (S_OK == pEnum->Next(1, &pElement, &cbActual)) {
+			while (S_OK == pEnum->Next(1, &pElement, &cbFetched)) {
 				UINT cbActual = 0;
 				CComQIPtr<IWICBitmapCodecInfo> pCodecInfo = pElement;
 				// Codec name
