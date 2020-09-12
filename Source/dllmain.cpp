@@ -58,11 +58,12 @@ STDAPI DllRegisterServer()
 		{ L"0", L"0,8,,89504E470D0A1A0A" },       // PNG
 		{ L"1", L"0,3,,FFD8FF" },                 // JPEG
 		{ L"2", L"0,2,,424D,6,4,,00000000" },     // BMP
-		{ L"3", L"0,4,,49492A00" },               // TIFF
+		{ L"3", L"0,4,,49492A00" },               // TIFF, DNG
 		{ L"4", L"0,4,,4949BC01" },               // HD Photo/JPEG XR
 		{ L"5", L"0,4,,52494646,8,4,,57454250" }, // WebP
 		{ L"6", L"4,8,,667479706D696631,16,8,,6D69663168656963" }, // HEIF (.heic)
 		{ L"6", L"4,8,,6674797068656963,16,8,,6D69663168656963" }, // HEIF (.heif)
+		{ L"7", L"0,4,,44445320" },               // DDS
 		// This may not work for JPEG and BMP. "Generate Still Video" still connects.
 		{ L"Source Filter", L"{7DB5C3B3-2419-4508-B1D0-F2D22DA8E439}" },
 	};

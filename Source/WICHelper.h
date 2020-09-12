@@ -39,10 +39,9 @@ static const wchar_t* ContainerFormat2Str(const GUID guid)
 	else if (guid == GUID_ContainerFormatGif)  { pStr = L"GIF"; }
 	else if (guid == GUID_ContainerFormatWmp)  { pStr = L"HD Photo/JPEG XR"; }
 	else if (guid == GUID_ContainerFormatDds)  { pStr = L"DDS"; }
-//	else if (guid == GUID_ContainerFormatAdng) { pStr = L"DNG"; }
-//	else if (guid == GUID_ContainerFormatHeif) { pStr = L"HEIF"; }
-//	else if (guid == GUID_ContainerFormatWebp) { pStr = L"WebP"; }
-//	else if (guid == GUID_ContainerFormatRaw)  { pStr = L"RAW"; }
+	else if (guid == GUID_ContainerFormatAdng) { pStr = L"DNG"; }
+	else if (guid == GUID_ContainerFormatHeif) { pStr = L"HEIF"; }
+	else if (guid == GUID_ContainerFormatWebp) { pStr = L"WebP"; }
 	else { pStr = L"Unknown"; }
 
 	return pStr;
