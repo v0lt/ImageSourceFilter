@@ -1,3 +1,7 @@
-v0.1.0.29 - 2020.02.10
+0.2.0
+----------------------
+Added registration for DDS, HEIF and AVIF files.
+
+0.1.0.29 - 2020.02.10
 ----------------------
 The first official release.
