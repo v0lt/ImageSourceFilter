@@ -27,6 +27,9 @@ DEFINE_GUID(GUID_ContainerFormatWebp2, 0x1f122879, 0xeba0, 0x4670, 0x98, 0xc5, 0
 // CopyTrans HEIC for Windows
 DEFINE_GUID(GUID_ContainerFormatHeic, 0x502a9ac6, 0x64f9, 0x43cb, 0x82, 0x44, 0xba, 0x76, 0x6b, 0x0c, 0x1b, 0x0b);
 
+// Adobe DNG Codec
+DEFINE_GUID(GUID_ContainerFormatAdng2, 0xcba90bec, 0x46e4, 0x4cb9, 0x82, 0x4f, 0x41, 0xa0, 0x9a, 0x12, 0x3c, 0x8d);
+
 enum ColorSystem_t {
 	CS_YUV,
 	CS_RGB,
@@ -46,7 +49,8 @@ static const wchar_t* ContainerFormat2Str(const GUID guid)
 	else if (guid == GUID_ContainerFormatGif)  { pStr = L"GIF"; }
 	else if (guid == GUID_ContainerFormatWmp)  { pStr = L"HD Photo/JPEG XR"; }
 	else if (guid == GUID_ContainerFormatDds)  { pStr = L"DDS"; }
-	else if (guid == GUID_ContainerFormatAdng) { pStr = L"DNG"; }
+	else if (guid == GUID_ContainerFormatAdng
+		|| guid == GUID_ContainerFormatAdng2)  { pStr = L"DNG"; }
 	else if (guid == GUID_ContainerFormatHeif) { pStr = L"HEIF"; }
 	else if (guid == GUID_ContainerFormatWebp
 		|| guid == GUID_ContainerFormatWebp2)  { pStr = L"WebP"; }
