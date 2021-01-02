@@ -20,6 +20,9 @@
 
 #pragma once
 
+// Microsoft Camera Codec Pack
+DEFINE_GUID(GUID_ContainerFormatRaw, 0xc1fc85cb, 0xd64f, 0x478b, 0xa4, 0xec, 0x69, 0xad, 0xc9, 0xee, 0x13, 0x92);
+
 // Google WebP Codec
 // https://github.com/webmproject/webp-wic-codec/blob/master/src/uuid.h
 DEFINE_GUID(GUID_ContainerFormatWebp2, 0x1f122879, 0xeba0, 0x4670, 0x98, 0xc5, 0xcf, 0x29, 0xf3, 0xb9, 0x87, 0x11);
@@ -55,6 +58,7 @@ static const wchar_t* ContainerFormat2Str(const GUID guid)
 	else if (guid == GUID_ContainerFormatWebp
 		|| guid == GUID_ContainerFormatWebp2)  { pStr = L"WebP"; }
 	else if (guid == GUID_ContainerFormatHeic) { pStr = L"HEIC"; }
+	else if (guid == GUID_ContainerFormatRaw)  { pStr = L"RAW"; }
 	else { pStr = L"Unknown"; }
 
 	return pStr;
