@@ -33,6 +33,9 @@ DEFINE_GUID(GUID_ContainerFormatHeic, 0x502a9ac6, 0x64f9, 0x43cb, 0x82, 0x44, 0x
 // Adobe DNG Codec
 DEFINE_GUID(GUID_ContainerFormatAdng2, 0xcba90bec, 0x46e4, 0x4cb9, 0x82, 0x4f, 0x41, 0xa0, 0x9a, 0x12, 0x3c, 0x8d);
 
+// Sony RAW Driver
+DEFINE_GUID(GUID_ContainerFormatArw, 0x1d3b9fcd, 0xf3ab, 0x416a, 0x85, 0x69, 0xa4, 0x02, 0x86, 0x8c, 0x36, 0x0f);
+
 enum ColorSystem_t {
 	CS_YUV,
 	CS_RGB,
@@ -59,6 +62,7 @@ static const wchar_t* ContainerFormat2Str(const GUID guid)
 		|| guid == GUID_ContainerFormatWebp2)  { pStr = L"WebP"; }
 	else if (guid == GUID_ContainerFormatHeic) { pStr = L"HEIC"; }
 	else if (guid == GUID_ContainerFormatRaw)  { pStr = L"RAW"; }
+	else if (guid == GUID_ContainerFormatArw)  { pStr = L"ARW"; }
 	else { pStr = L"Unknown"; }
 
 	return pStr;
