@@ -1,5 +1,5 @@
 /*
-* (C) 2020 see Authors.txt
+* (C) 2020-2021 see Authors.txt
 *
 * This file is part of MPC-BE.
 *
@@ -19,6 +19,13 @@
 */
 
 #pragma once
+
+// Google WebP Codec
+// https://github.com/webmproject/webp-wic-codec/blob/master/src/uuid.h
+DEFINE_GUID(GUID_ContainerFormatWebp2, 0x1f122879, 0xeba0, 0x4670, 0x98, 0xc5, 0xcf, 0x29, 0xf3, 0xb9, 0x87, 0x11);
+
+// CopyTrans HEIC for Windows
+DEFINE_GUID(GUID_ContainerFormatHeic, 0x502a9ac6, 0x64f9, 0x43cb, 0x82, 0x44, 0xba, 0x76, 0x6b, 0x0c, 0x1b, 0x0b);
 
 enum ColorSystem_t {
 	CS_YUV,
@@ -41,7 +48,9 @@ static const wchar_t* ContainerFormat2Str(const GUID guid)
 	else if (guid == GUID_ContainerFormatDds)  { pStr = L"DDS"; }
 	else if (guid == GUID_ContainerFormatAdng) { pStr = L"DNG"; }
 	else if (guid == GUID_ContainerFormatHeif) { pStr = L"HEIF"; }
-	else if (guid == GUID_ContainerFormatWebp) { pStr = L"WebP"; }
+	else if (guid == GUID_ContainerFormatWebp
+		|| guid == GUID_ContainerFormatWebp2)  { pStr = L"WebP"; }
+	else if (guid == GUID_ContainerFormatHeic) { pStr = L"HEIC"; }
 	else { pStr = L"Unknown"; }
 
 	return pStr;
