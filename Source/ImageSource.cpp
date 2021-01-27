@@ -233,11 +233,17 @@ void CImageStream::SetPixelFormats(IWICImagingFactory* pWICFactory, IWICBitmapFr
 		else {
 			if (m_DecodePixFmtDesc.alpha) {
 				m_OuputPixFmt1 = GUID_WICPixelFormat64bppPBGRA;
-				m_subtype1 = MEDIASUBTYPE_ARGB64;
+				m_subtype1 = MEDIASUBTYPE_BGRA64;
 			}
 			else {
-				m_OuputPixFmt1 = GUID_WICPixelFormat48bppBGR;
-				m_subtype1 = MEDIASUBTYPE_RGB48;
+				if (m_DecodePixFmtDesc.wicpfguid == GUID_WICPixelFormat48bppBGR) {
+					m_OuputPixFmt1 = GUID_WICPixelFormat48bppBGR;
+					m_subtype1 = MEDIASUBTYPE_BGR48;
+				}
+				else {
+					m_OuputPixFmt1 = GUID_WICPixelFormat48bppRGB;
+					m_subtype1 = MEDIASUBTYPE_RGB48;
+				}
 			}
 		}
 	}
