@@ -1,5 +1,5 @@
 /*
-* (C) 2020 see Authors.txt
+* (C) 2020-2021 see Authors.txt
 *
 * This file is part of MPC-BE.
 *
@@ -24,11 +24,11 @@
 
 std::wstring GetVersionStr()
 {
-	std::wstring version = _CRT_WIDE(MPCIS_VERSION_STR);
+	std::wstring version = _CRT_WIDE(VERSION_STR);
 #if MPCIS_RELEASE != 1
 	version += fmt::format(L" (git-{}-{})",
-		_CRT_WIDE(_CRT_STRINGIZE(MPCIS_REV_DATE)),
-		_CRT_WIDE(_CRT_STRINGIZE(MPCIS_REV_HASH))
+		_CRT_WIDE(_CRT_STRINGIZE(REV_DATE)),
+		_CRT_WIDE(_CRT_STRINGIZE(REV_HASH))
 	);
 #endif
 #ifdef _WIN64

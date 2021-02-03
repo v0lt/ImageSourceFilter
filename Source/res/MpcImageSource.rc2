@@ -27,8 +27,8 @@
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION MPCIS_VERSION_NUM
- PRODUCTVERSION MPCIS_VERSION_NUM
+ FILEVERSION VERSION_NUM
+ PRODUCTVERSION VERSION_NUM
  FILEFLAGSMASK 0x17L
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -45,9 +45,9 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "MPC-BE Team"
             VALUE "FileDescription", "MPC Image Source"
-            VALUE "FileVersion", MPCIS_VERSION_STR
+            VALUE "FileVersion", VERSION_STR
             VALUE "InternalName", "MpcImageSource"
-            VALUE "LegalCopyright", "Copyright 2018-2020"
+            VALUE "LegalCopyright", "Copyright 2020-2021"
 #ifdef _WIN64
 
             VALUE "OriginalFilename", "MpcImageSource64.ax"
@@ -55,7 +55,7 @@ BEGIN
             VALUE "OriginalFilename", "MpcImageSource.ax"
 #endif
             VALUE "ProductName", "MPC Image Source"
-            VALUE "ProductVersion", MPCIS_VERSION_STR
+            VALUE "ProductVersion", VERSION_STR
         END
     END
     BLOCK "VarFileInfo"
