@@ -283,10 +283,10 @@ CImageStream::CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr)
 	const Settings_t Sets = static_cast<CMpcImageSource*>(pParent)->m_Sets;
 	m_bEnableSeeking = (Sets.iImageDuration > 0);
 
-	CComPtr<IWICImagingFactory> pWICFactory;
-	CComPtr<IWICBitmapDecoder> pDecoder;
+	CComPtr<IWICImagingFactory>    pWICFactory;
+	CComPtr<IWICBitmapDecoder>     pDecoder;
 	CComPtr<IWICBitmapFrameDecode> pFrameDecode;
-	CComPtr<IWICBitmapScaler> pIScaler;
+	CComPtr<IWICBitmapScaler>      pScaler;
 
 	HRESULT hr = CoCreateInstance(
 		CLSID_WICImagingFactory,
@@ -297,7 +297,7 @@ CImageStream::CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr)
 	);
 
 #ifdef _DEBUG
-	{
+	if (SUCCEEDED(hr)) {
 		std::wstring dbgstr(L"WIC Decoders:");
 		CComPtr<IEnumUnknown> pEnum;
 		DWORD dwOptions = WICComponentEnumerateDefault;
@@ -371,13 +371,13 @@ CImageStream::CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr)
 
 		UINT dimension = std::max(m_Width, m_Height);
 		if (dimension > Sets.iMaxDimension) {
-			hr = pWICFactory->CreateBitmapScaler(&pIScaler);
+			hr = pWICFactory->CreateBitmapScaler(&pScaler);
 			if (SUCCEEDED(hr)) {
 				UINT divider = (dimension + Sets.iMaxDimension - 1) / Sets.iMaxDimension;
 				UINT w = m_Width / divider;
 				UINT h = m_Height / divider;
 
-				hr = pIScaler->Initialize(m_pBitmap1, w, h, WICBitmapInterpolationModeFant);
+				hr = pScaler->Initialize(m_pBitmap1, w, h, WICBitmapInterpolationModeFant);
 				if (SUCCEEDED(hr)) {
 					m_Width = w;
 					m_Height = h;
