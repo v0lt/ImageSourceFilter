@@ -3,8 +3,8 @@
   <PropertyGroup>
     <IntDir>$(SolutionDir)_bin\obj\$(Configuration)_$(PlatformShortName)\$(ProjectName)\</IntDir>
     <OutDir>$(SolutionDir)_bin\lib\$(Configuration)_$(PlatformShortName)\</OutDir>
-    <OutDir Condition="'$(ProjectName)|$(Configuration)'=='MpcImageSource|Debug'">$(SolutionDir)_bin\Filter_$(PlatformShortName)_Debug\</OutDir>
-    <OutDir Condition="'$(ProjectName)|$(Configuration)'=='MpcImageSource|Release'">$(SolutionDir)_bin\Filter_$(PlatformShortName)\</OutDir>
+    <OutDir Condition="'$(TargetExt)'!='.lib'And'$(Configuration)'=='Debug'">$(SolutionDir)_bin\Filter_$(PlatformShortName)_Debug\</OutDir>
+    <OutDir Condition="'$(TargetExt)'!='.lib'And'$(Configuration)'=='Release'">$(SolutionDir)_bin\Filter_$(PlatformShortName)\</OutDir>
     <LinkIncremental Condition="$(Configuration.Contains('Debug'))">true</LinkIncremental>
     <LinkIncremental Condition="$(Configuration.Contains('Release'))">false</LinkIncremental>
   </PropertyGroup>
