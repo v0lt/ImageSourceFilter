@@ -67,6 +67,7 @@ STDAPI DllRegisterServer()
 		{ L"9", L"0,4,,44445320" },               // DDS
 		{ L"10", L"0,4,,4949524F" },              // ORF
 		{ L"11", L"0,4,,4D4D002A" },              // PEF
+		{ L"12", L"0,2,,FF0A" },                  // JPEG XL
 		// This may not work for JPEG and BMP. "Generate Still Video" still connects.
 		{ L"Source Filter", L"{7DB5C3B3-2419-4508-B1D0-F2D22DA8E439}" },
 	};

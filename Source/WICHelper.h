@@ -36,6 +36,10 @@ DEFINE_GUID(GUID_ContainerFormatAdng2, 0xcba90bec, 0x46e4, 0x4cb9, 0x82, 0x4f, 0
 // Sony RAW Driver
 DEFINE_GUID(GUID_ContainerFormatArw, 0x1d3b9fcd, 0xf3ab, 0x416a, 0x85, 0x69, 0xa4, 0x02, 0x86, 0x8c, 0x36, 0x0f);
 
+// Mirillis JPEG XL Decoder
+// https://github.com/mirillis/jpegxl-wic/blob/main/src/interface.h
+DEFINE_GUID(GUID_ContainerFormatJXL, 0x32febf67, 0x29d8, 0x4643, 0xbe, 0x1e, 0x5f, 0x27, 0x9f, 0x6b, 0xd7, 0xc6);
+
 enum ColorSystem_t {
 	CS_YUV,
 	CS_RGB,
@@ -63,6 +67,7 @@ static const wchar_t* ContainerFormat2Str(const GUID guid)
 	else if (guid == GUID_ContainerFormatHeic) { pStr = L"HEIC"; }
 	else if (guid == GUID_ContainerFormatRaw)  { pStr = L"RAW"; }
 	else if (guid == GUID_ContainerFormatArw)  { pStr = L"ARW"; }
+	else if (guid == GUID_ContainerFormatJXL)  { pStr = L"JPEG XL"; }
 	else { pStr = L"Unknown"; }
 
 	return pStr;
