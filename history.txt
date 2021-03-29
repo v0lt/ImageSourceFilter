@@ -1,7 +1,8 @@
 0.2.0
 ----------------------
-Added registration for DDS, HEIF (HEIC, AVIF), ORF, PEF files.
+Added support for DDS, HEIF (HEIC, AVIF), ORF, PEF, JPEG XL.
 Improved support for some JPEG XR files.
+Fixed output of 16-bit pictures per channel. 
 
 0.1.0.29 - 2020.02.10
 ----------------------
