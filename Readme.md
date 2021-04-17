@@ -1,6 +1,6 @@
 ﻿# MPC Image Source
 
-MPC Image Source is a free and open-source DirectShow filter. The filter allows to open graphics images in video players. Recommended MPC-BE v1.5.5.5064 or newer.
+MPC Image Source is a free and open-source DirectShow filter. The filter allows to open graphics images in video players. Recommended MPC-BE 1.5.7.6180 or newer.
 
 ## Minimum system requirements
 

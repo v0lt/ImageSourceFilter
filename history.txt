@@ -1,4 +1,4 @@
-0.2.0
+0.2.1.75 - 2021.04.17
 ----------------------
 Added support for DDS, HEIF (HEIC, AVIF), ORF, PEF, JPEG XL.
 Improved support for some JPEG XR files.
