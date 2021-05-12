@@ -1,5 +1,5 @@
 /*
- * (C) 2020 see Authors.txt
+ * (C) 2020-2021 see Authors.txt
  *
  * This file is part of MPC-BE.
  *
@@ -20,5 +20,6 @@
 
 #include "stdafx.h"
 
+#pragma comment(lib, "strmiids.lib")
 #pragma comment(lib, "winmm.lib")
 #pragma comment(lib, "windowscodecs.lib")
