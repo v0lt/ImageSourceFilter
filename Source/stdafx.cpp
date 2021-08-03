@@ -20,6 +20,5 @@
 
 #include "stdafx.h"
 
-#pragma comment(lib, "strmiids.lib")
 #pragma comment(lib, "winmm.lib")
 #pragma comment(lib, "windowscodecs.lib")
