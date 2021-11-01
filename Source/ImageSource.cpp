@@ -367,6 +367,7 @@ CImageStream::CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr)
 				m_pBitmap1 = pFrameConvert;
 				pFrameConvert->Release();
 			}
+			DLogIf(FAILED(hr), L"WICConvertBitmapSource failed with error {}", HR2Str(hr));
 		}
 
 		UINT dimension = std::max(m_Width, m_Height);
@@ -387,6 +388,7 @@ CImageStream::CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr)
 
 		if (!IsEqualGUID(m_OuputPixFmt1, m_OuputPixFmt2)){
 			hr = WICConvertBitmapSource(m_OuputPixFmt2, m_pBitmap1, &m_pBitmap2);
+			DLogIf(FAILED(hr), L"WICConvertBitmapSource failed with error {}", HR2Str(hr));
 		}
 	}
 
