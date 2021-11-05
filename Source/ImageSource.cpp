@@ -335,6 +335,7 @@ CImageStream::CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr)
 			WICDecodeMetadataCacheOnLoad,
 			&pDecoder
 		);
+		DLogIf(FAILED(hr), L"CreateDecoderFromFilename failed with error {}", HR2Str(hr));
 	}
 
 	if (SUCCEEDED(hr)) {
