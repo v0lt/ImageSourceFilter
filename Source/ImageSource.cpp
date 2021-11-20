@@ -308,7 +308,7 @@ CImageStream::CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr)
 			CComPtr<IUnknown> pElement = nullptr;
 			while (S_OK == pEnum->Next(1, &pElement, &cbFetched)) {
 				UINT cbActual = 0;
-				CComQIPtr<IWICBitmapCodecInfo> pCodecInfo = pElement;
+				CComQIPtr<IWICBitmapCodecInfo> pCodecInfo(pElement);
 				// Codec name
 				hr2 = pCodecInfo->GetFriendlyName(std::size(buffer)-1, buffer, &cbActual);
 				if (SUCCEEDED(hr2)) {
