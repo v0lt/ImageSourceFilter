@@ -40,4 +40,4 @@
 #include <vector>
 
 #include "../external/BaseClasses/streams.h"
-#include "../external/fmt/include/fmt/format.h"
+#include "../external/fmt/include/fmt/xchar.h"
