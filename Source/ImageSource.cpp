@@ -1,5 +1,5 @@
 /*
- * (C) 2020-2021 see Authors.txt
+ * (C) 2020-2022 see Authors.txt
  *
  * This file is part of MPC-BE.
  *
@@ -262,15 +262,9 @@ void CImageStream::SetPixelFormats(IWICImagingFactory* pWICFactory, IWICBitmapFr
 		m_subtype1 = MEDIASUBTYPE_ARGB32;
 	}
 
-	// subtype for compatibility
-	if (m_DecodePixFmtDesc.alpha) {
-		m_OuputPixFmt2 = GUID_WICPixelFormat32bppPBGRA;
-		m_subtype2 = MEDIASUBTYPE_ARGB32;
-	}
-	else {
-		m_OuputPixFmt2 = GUID_WICPixelFormat32bppBGR;
-		m_subtype2 = MEDIASUBTYPE_RGB32;
-	}
+	// subtype for compatibility with EVR, Haali VR and madVR
+	m_OuputPixFmt2 = GUID_WICPixelFormat32bppBGR;
+	m_subtype2 = MEDIASUBTYPE_RGB32;
 }
 
 CImageStream::CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr)
@@ -346,6 +340,16 @@ CImageStream::CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr)
 
 		hr = pDecoder->GetFrame(0, &pFrameDecode);
 	}
+
+#ifdef _DEBUG
+	if (SUCCEEDED(hr)) {
+		UINT frameCount = 0;
+		hr = pDecoder->GetFrameCount(&frameCount);
+		if (SUCCEEDED(hr)) {
+			DLog(L"Frame count: {}", frameCount);
+		}
+	}
+#endif
 
 	if (SUCCEEDED(hr)) {
 		SetPixelFormats(pWICFactory, pFrameDecode);
