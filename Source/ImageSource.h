@@ -1,5 +1,5 @@
 /*
- * (C) 2020 see Authors.txt
+ * (C) 2020-2022 see Authors.txt
  *
  * This file is part of MPC-BE.
  *
@@ -85,7 +85,6 @@ private:
 	BOOL m_bDiscontinuity = FALSE;
 	BOOL m_bFlushing = FALSE;
 
-	bool m_bEnableSeeking = false;
 	std::vector<CMediaType> m_mts;
 
 	CComPtr<IWICBitmapSource> m_pBitmap;

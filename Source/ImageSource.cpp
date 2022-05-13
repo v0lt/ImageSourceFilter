@@ -275,7 +275,6 @@ CImageStream::CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr)
 
 	// get a copy of the settings
 	const Settings_t Sets = static_cast<CMpcImageSource*>(pParent)->m_Sets;
-	m_bEnableSeeking = (Sets.iImageDuration > 0);
 
 	CComPtr<IWICImagingFactory>    pWICFactory;
 	CComPtr<IWICBitmapDecoder>     pDecoder;
@@ -403,6 +402,8 @@ CImageStream::CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr)
 			if (m_AvgTimePerFrame > m_rtDuration) {
 				m_AvgTimePerFrame = m_rtDuration;
 			}
+		} else {
+			m_rtDuration = 0;
 		}
 
 		UINT bitdepth1 = GetPixelFormatDesc(m_OuputPixFmt1)->depth;
@@ -463,7 +464,7 @@ STDMETHODIMP CImageStream::NonDelegatingQueryInterface(REFIID riid, void** ppv)
 {
 	CheckPointer(ppv, E_POINTER);
 
-	return (riid == IID_IMediaSeeking && m_bEnableSeeking) ? CSourceSeeking::NonDelegatingQueryInterface(riid, ppv)
+	return (riid == IID_IMediaSeeking) ? CSourceSeeking::NonDelegatingQueryInterface(riid, ppv)
 		: CSourceStream::NonDelegatingQueryInterface(riid, ppv);
 }
 
