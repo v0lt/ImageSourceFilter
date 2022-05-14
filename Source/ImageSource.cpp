@@ -530,6 +530,13 @@ HRESULT CImageStream::ChangeStop()
 {
 	{
 		CAutoLock lock(CSourceSeeking::m_pLock);
+
+		if (m_rtStop > 0 && m_rtStop < _I64_MAX / 2) {
+			m_rtDuration = m_rtStop;
+		} else {
+			m_rtDuration = 0;
+		}
+
 		if (m_rtPosition < m_rtStop) {
 			return S_OK;
 		}
