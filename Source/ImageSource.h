@@ -48,24 +48,23 @@ public:
 	~CMpcImageSource();
 
 	DECLARE_IUNKNOWN
-	STDMETHODIMP NonDelegatingQueryInterface(REFIID riid, void** ppv);
+	STDMETHODIMP NonDelegatingQueryInterface(REFIID riid, void** ppv) override;
 
 	// IFileSourceFilter
-	STDMETHODIMP Load(LPCOLESTR pszFileName, const AM_MEDIA_TYPE* pmt);
-	STDMETHODIMP GetCurFile(LPOLESTR* ppszFileName, AM_MEDIA_TYPE* pmt);
+	STDMETHODIMP Load(LPCOLESTR pszFileName, const AM_MEDIA_TYPE* pmt) override;
+	STDMETHODIMP GetCurFile(LPOLESTR* ppszFileName, AM_MEDIA_TYPE* pmt) override;
 
 	// IAMFilterMiscFlags
-	STDMETHODIMP_(ULONG) GetMiscFlags();
+	STDMETHODIMP_(ULONG) GetMiscFlags() override;
 
 	// ISpecifyPropertyPages
-	STDMETHODIMP GetPages(CAUUID* pPages);
+	STDMETHODIMP GetPages(CAUUID* pPages) override;
 
 	// IImageSource
-	STDMETHODIMP_(bool) GetActive();
-	STDMETHODIMP_(void) GetSettings(Settings_t& setings);
-	STDMETHODIMP_(void) SetSettings(const Settings_t setings);
-
-	STDMETHODIMP SaveSettings();
+	STDMETHODIMP_(bool) GetActive() override;
+	STDMETHODIMP_(void) GetSettings(Settings_t& setings) override;
+	STDMETHODIMP_(void) SetSettings(const Settings_t setings) override;
+	STDMETHODIMP SaveSettings() override;
 
 	// IExFilterConfig
 	STDMETHODIMP GetInt64(LPCSTR field, __int64* value) override;
@@ -100,15 +99,15 @@ private:
 	GUID m_subtype1 = GUID_NULL;
 	GUID m_subtype2 = GUID_NULL;
 
-	HRESULT OnThreadStartPlay();
-	HRESULT OnThreadCreate();
+	HRESULT OnThreadStartPlay() override;
+	HRESULT OnThreadCreate() override;
 
 	void UpdateFromSeek();
-	STDMETHODIMP SetRate(double dRate);
+	STDMETHODIMP SetRate(double dRate) override;
 
-	HRESULT ChangeStart();
-	HRESULT ChangeStop();
-	HRESULT ChangeRate() { return S_OK; }
+	HRESULT ChangeStart() override;
+	HRESULT ChangeStop() override;
+	HRESULT ChangeRate() override { return S_OK; }
 
 	void SetPixelFormats(IWICImagingFactory* pWICFactory, IWICBitmapFrameDecode* pFrameDecode);
 
@@ -116,13 +115,13 @@ public:
 	CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr);
 	virtual ~CImageStream();
 
-	STDMETHODIMP NonDelegatingQueryInterface(REFIID riid, void** ppv);
+	STDMETHODIMP NonDelegatingQueryInterface(REFIID riid, void** ppv) override;
 
-	HRESULT DecideBufferSize(IMemAllocator* pIMemAlloc, ALLOCATOR_PROPERTIES* pProperties);
-	HRESULT FillBuffer(IMediaSample* pSample);
-	HRESULT CheckMediaType(const CMediaType* pMediaType);
-	HRESULT SetMediaType(const CMediaType* pMediaType);
-	HRESULT GetMediaType(int iPosition, CMediaType* pmt);
+	HRESULT DecideBufferSize(IMemAllocator* pIMemAlloc, ALLOCATOR_PROPERTIES* pProperties) override;
+	HRESULT FillBuffer(IMediaSample* pSample) override;
+	HRESULT CheckMediaType(const CMediaType* pMediaType) override;
+	HRESULT SetMediaType(const CMediaType* pMediaType) override;
+	HRESULT GetMediaType(int iPosition, CMediaType* pmt) override;
 
-	STDMETHODIMP Notify(IBaseFilter* pSender, Quality q);
+	STDMETHODIMP Notify(IBaseFilter* pSender, Quality q) override;
 };
