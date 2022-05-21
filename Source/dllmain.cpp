@@ -1,5 +1,5 @@
 /*
- * (C) 2020-2021 see Authors.txt
+ * (C) 2020-2022 see Authors.txt
  *
  * This file is part of MPC-BE.
  *
@@ -70,11 +70,11 @@ STDAPI DllRegisterServer()
 		{ L"12", L"0,2,,FF0A" },                      // JPEG XL codestream
 		{ L"13", L"0,12,,0000000C4A584C200D0A870A" }, // JPEG XL container
 		// This may not work for JPEG and BMP. "Generate Still Video" still connects.
-		{ L"Source Filter", L"{7DB5C3B3-2419-4508-B1D0-F2D22DA8E439}" },
+		{ L"Source Filter", _CRT_WIDE(STR_CLSID_ImageSource) },
 	};
 
 	HKEY hKey;
-	LONG ec = ::RegCreateKeyExW(HKEY_CLASSES_ROOT, L"Media Type\\{e436eb83-524f-11ce-9f53-0020af0ba770}\\{7DB5C3B3-2419-4508-B1D0-F2D22DA8E439}", 0, 0, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, 0, &hKey, 0);
+	LONG ec = ::RegCreateKeyExW(HKEY_CLASSES_ROOT, L"Media Type\\{e436eb83-524f-11ce-9f53-0020af0ba770}\\" _CRT_WIDE(STR_CLSID_ImageSource), 0, 0, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, 0, &hKey, 0);
 	if (ec == ERROR_SUCCESS) {
 		for (const auto& value : values) {
 			ec = ::RegSetValueExW(hKey, value.name, 0, REG_SZ,
@@ -93,7 +93,7 @@ STDAPI DllUnregisterServer()
 	HKEY hKey;
 	LONG ec = ::RegOpenKeyExW(HKEY_CLASSES_ROOT, L"Media Type\\{e436eb83-524f-11ce-9f53-0020af0ba770}", 0, KEY_ALL_ACCESS, &hKey);
 	if (ec == ERROR_SUCCESS) {
-		ec = ::RegDeleteKeyW(hKey, L"{7DB5C3B3-2419-4508-B1D0-F2D22DA8E439}");
+		ec = ::RegDeleteKeyW(hKey, _CRT_WIDE(STR_CLSID_ImageSource));
 		::RegCloseKey(hKey);
 	}
 
