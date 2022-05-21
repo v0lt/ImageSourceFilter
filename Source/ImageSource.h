@@ -27,7 +27,7 @@
 #include "IImageSource.h"
 #include "../Include/FilterInterfacesImpl.h"
 
-#define STR_CLSID_ImageSource "7DB5C3B3-2419-4508-B1D0-F2D22DA8E439"
+#define STR_CLSID_ImageSource "{7DB5C3B3-2419-4508-B1D0-F2D22DA8E439}"
 
 class __declspec(uuid(STR_CLSID_ImageSource))
 	CMpcImageSource
