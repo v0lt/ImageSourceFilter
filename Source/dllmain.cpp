@@ -77,8 +77,8 @@ STDAPI DllRegisterServer()
 			(DWORD)(wcslen(value_data[0]) + 1) * sizeof(WCHAR));
 
 		WCHAR value_name[4] = {};
-		for (int i = 1; i < std::size(value_data); i++) {
-			_itow_s(i, value_name, 10);
+		for (unsigned i = 1; i < std::size(value_data); i++) {
+			_ultow_s(i, value_name, 10);
 			ec = ::RegSetValueExW(hKey, value_name, 0, REG_SZ,
 				reinterpret_cast<BYTE*>(const_cast<LPWSTR>(value_data[i])),
 				(DWORD)(wcslen(value_data[i]) + 1) * sizeof(WCHAR));
