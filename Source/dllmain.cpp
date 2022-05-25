@@ -39,7 +39,7 @@ const AMOVIESETUP_PIN sudpPins[] = {
 };
 
 const AMOVIESETUP_FILTER sudFilter[] = {
-	{&__uuidof(CMpcImageSource), L"MPC Image Source", MERIT_NORMAL, std::size(sudpPins), sudpPins, CLSID_LegacyAmFilterCategory},
+	{&__uuidof(CMpcImageSource), L"MPC Image Source", MERIT_NORMAL, (UINT)std::size(sudpPins), sudpPins, CLSID_LegacyAmFilterCategory},
 };
 
 CFactoryTemplate g_Templates[] = {
@@ -47,7 +47,7 @@ CFactoryTemplate g_Templates[] = {
 	{L"MainProp", &__uuidof(CISMainPPage), CreateInstance<CISMainPPage>, nullptr, nullptr},
 };
 
-int g_cTemplates = std::size(g_Templates);
+int g_cTemplates = (int)std::size(g_Templates);
 
 STDAPI DllRegisterServer()
 {
