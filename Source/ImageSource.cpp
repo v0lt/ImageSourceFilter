@@ -190,9 +190,9 @@ STDMETHODIMP CMpcImageSource::GetInt64(LPCSTR field, __int64 *value)
 // CImageStream
 //
 
-void CImageStream::SetPixelFormats(IWICImagingFactory* pWICFactory, IWICBitmapFrameDecode* pFrameDecode)
+void CImageStream::SetPixelFormats(IWICBitmapFrameDecode* pFrameDecode)
 {
-	ASSERT(pWICFactory);
+	ASSERT(m_pWICFactory);
 	ASSERT(pFrameDecode);
 
 	WICPixelFormatGUID pixelFormat = GUID_NULL;
@@ -201,7 +201,7 @@ void CImageStream::SetPixelFormats(IWICImagingFactory* pWICFactory, IWICBitmapFr
 	m_DecodePixFmtDesc = *GetPixelFormatDesc(pixelFormat);
 	CComPtr<IWICPalette> pPalette;
 	UINT colorCount = 0;
-	hr = pWICFactory->CreatePalette(&pPalette);
+	hr = m_pWICFactory->CreatePalette(&pPalette);
 	hr = pFrameDecode->CopyPalette(pPalette);
 	hr = pPalette->GetColorCount(&colorCount);
 
@@ -276,17 +276,15 @@ CImageStream::CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr)
 	// get a copy of the settings
 	const Settings_t Sets = static_cast<CMpcImageSource*>(pParent)->m_Sets;
 
-	CComPtr<IWICImagingFactory>    pWICFactory;
 	CComPtr<IWICBitmapDecoder>     pDecoder;
 	CComPtr<IWICBitmapFrameDecode> pFrameDecode;
-	CComPtr<IWICBitmapScaler>      pScaler;
 
 	HRESULT hr = CoCreateInstance(
 		CLSID_WICImagingFactory,
 		nullptr,
 		CLSCTX_INPROC_SERVER,
 		IID_IWICImagingFactory,
-		(LPVOID*)&pWICFactory
+		(LPVOID*)&m_pWICFactory
 	);
 
 #ifdef _DEBUG
@@ -294,7 +292,7 @@ CImageStream::CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr)
 		std::wstring dbgstr(L"WIC Decoders:");
 		CComPtr<IEnumUnknown> pEnum;
 		DWORD dwOptions = WICComponentEnumerateDefault;
-		HRESULT hr2 = pWICFactory->CreateComponentEnumerator(WICDecoder, dwOptions, &pEnum);
+		HRESULT hr2 = m_pWICFactory->CreateComponentEnumerator(WICDecoder, dwOptions, &pEnum);
 		if (SUCCEEDED(hr2)) {
 			WCHAR buffer[256]; // if not enough will be truncated
 			ULONG cbFetched = 0;
@@ -321,7 +319,7 @@ CImageStream::CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr)
 #endif
 
 	if (SUCCEEDED(hr)) {
-		hr = pWICFactory->CreateDecoderFromFilename(
+		hr = m_pWICFactory->CreateDecoderFromFilename(
 			name,
 			nullptr,
 			GENERIC_READ,
@@ -351,7 +349,7 @@ CImageStream::CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr)
 #endif
 
 	if (SUCCEEDED(hr)) {
-		SetPixelFormats(pWICFactory, pFrameDecode);
+		SetPixelFormats(pFrameDecode);
 		DLog(L"Decode pixel format: {}", m_DecodePixFmtDesc.str);
 		DLog(L"Convert pixel format: {}", GetPixelFormatDesc(m_OuputPixFmt1)->str);
 	}
@@ -376,7 +374,8 @@ CImageStream::CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr)
 
 		UINT dimension = std::max(m_Width, m_Height);
 		if (dimension > Sets.iMaxDimension) {
-			hr = pWICFactory->CreateBitmapScaler(&pScaler);
+			IWICBitmapScaler* pScaler;
+			hr = m_pWICFactory->CreateBitmapScaler(&pScaler);
 			if (SUCCEEDED(hr)) {
 				UINT divider = (dimension + Sets.iMaxDimension - 1) / Sets.iMaxDimension;
 				UINT w = m_Width / divider;
@@ -386,7 +385,9 @@ CImageStream::CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr)
 				if (SUCCEEDED(hr)) {
 					m_Width = w;
 					m_Height = h;
+					m_pBitmap1 = pScaler;
 				}
+				pScaler->Release();
 			}
 		}
 
@@ -689,12 +690,31 @@ HRESULT CImageStream::SetMediaType(const CMediaType* pMediaType)
 
 	if (SUCCEEDED(hr)) {
 		DLog(L"SetMediaType with subtype {}", GUIDtoWString(m_mt.subtype));
+
+		WICPixelFormatGUID pixelFormat = GUID_NULL;
+		if (m_pBitmap) {
+			m_pBitmap->GetPixelFormat(&pixelFormat);
+		}
+
 		if (m_mt.subtype == m_subtype1) {
-			m_pBitmap = m_pBitmap1;
+			if (pixelFormat != m_OuputPixFmt1) {
+				m_pBitmap.Release();
+				hr = m_pWICFactory->CreateBitmapFromSource(m_pBitmap1, WICBitmapCacheOnLoad, &m_pBitmap);
+			}
 		}
 		else if (m_mt.subtype == m_subtype2) {
-			m_pBitmap = m_pBitmap2;
+			if (pixelFormat != m_OuputPixFmt2) {
+				m_pBitmap.Release();
+				hr = m_pWICFactory->CreateBitmapFromSource(m_pBitmap2, WICBitmapCacheOnLoad, &m_pBitmap);
+			}
 		}
+		else {
+			hr = E_FAIL;
+		}
+	}
+
+	if (FAILED(hr)) {
+		m_pBitmap.Release();
 	}
 
 	return hr;

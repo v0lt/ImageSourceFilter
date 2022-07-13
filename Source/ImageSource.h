@@ -88,9 +88,12 @@ private:
 
 	std::vector<CMediaType> m_mts;
 
-	CComPtr<IWICBitmapSource> m_pBitmap;
+	CComPtr<IWICImagingFactory> m_pWICFactory;
+
+	CComPtr<IWICBitmap> m_pBitmap;
 	CComPtr<IWICBitmapSource> m_pBitmap1;
 	CComPtr<IWICBitmapSource> m_pBitmap2;
+
 	UINT m_Width  = 0;
 	UINT m_Height = 0;
 	UINT m_maxBufferSize = 0;
@@ -111,7 +114,7 @@ private:
 	HRESULT ChangeStop() override;
 	HRESULT ChangeRate() override { return S_OK; }
 
-	void SetPixelFormats(IWICImagingFactory* pWICFactory, IWICBitmapFrameDecode* pFrameDecode);
+	void SetPixelFormats(IWICBitmapFrameDecode* pFrameDecode);
 
 public:
 	CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr);
