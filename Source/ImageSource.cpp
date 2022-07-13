@@ -590,12 +590,13 @@ HRESULT CImageStream::FillBuffer(IMediaSample* pSample)
 	{
 		CAutoLock cAutoLockShared(&m_cSharedState);
 
-		if (m_rtPosition >= m_rtStop) {
+		if (m_rtPosition >= m_rtStop || !m_pBitmap) {
 			return S_FALSE;
 		}
 
 		BYTE* pDataOut = nullptr;
-		if (!m_pBitmap1 || FAILED(hr = pSample->GetPointer(&pDataOut)) || !pDataOut) {
+		hr = pSample->GetPointer(&pDataOut);
+		if (FAILED(hr) || !pDataOut) {
 			return S_FALSE;
 		}
 
@@ -624,6 +625,10 @@ HRESULT CImageStream::FillBuffer(IMediaSample* pSample)
 		}
 
 		hr = m_pBitmap->CopyPixels(nullptr, stride, outSize, pDataOut);
+		if (FAILED(hr)) {
+			DLog(L"CopyPixels failed with error {}", HR2Str(hr));
+			return S_FALSE;
+		}
 
 		pSample->SetActualDataLength(stride * m_Height);
 
