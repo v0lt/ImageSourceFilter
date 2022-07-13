@@ -1,5 +1,5 @@
 /*
- * (C) 2020 see Authors.txt
+ * (C) 2020-2022 see Authors.txt
  *
  * This file is part of MPC-BE.
  *
@@ -30,7 +30,7 @@ struct Settings_t {
 
 	void SetDefault() {
 		iImageDuration = 0;
-		iMaxDimension  = 16384;
+		iMaxDimension  = 8192;
 	}
 };
 
