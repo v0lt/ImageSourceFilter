@@ -1,5 +1,9 @@
 0.2.4
 ----------------------
+Now uses MEDIASUBTYPE_RGB32 for additional compatibility format because MEDIASUBTYPE_ARGB32 is not supported by Haali VR and madVR.
+Fixed operation of IMediaSeeking interface. Now the player can control how long images are displayed.
+Fixed shrinking of very large images.
+Set the default value for the "Max. non-scalable size" option to 8192 for compatibility with video renderers using Direct3D 9 or DXVA2 on some video adapters.
 
 
 0.2.3.95 - 2021.12.16
