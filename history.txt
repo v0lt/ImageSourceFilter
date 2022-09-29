@@ -1,4 +1,8 @@
-0.2.5.119 - 2022.07.15
+0.2.6 dev
+----------------------
+
+
+0.2.5.119 - 2022-07-15
 ----------------------
 Now uses MEDIASUBTYPE_RGB32 for additional compatibility format because MEDIASUBTYPE_ARGB32 is not supported by Haali VR and madVR.
 Fixed operation of IMediaSeeking interface. Now the player can control how long images are displayed.
@@ -6,18 +10,18 @@ Fixed shrinking of very large images.
 Set the default value for the "Max. non-scalable size" option to 8192 for compatibility with video renderers using Direct3D 9 or DXVA2 on some video adapters.
 
 
-0.2.3.95 - 2021.12.16
+0.2.3.95 - 2021-12-16
 ----------------------
 Improved support for JPEG XL.
 
 
-0.2.1.75 - 2021.04.17
+0.2.1.75 - 2021-04-17
 ----------------------
 Added support for DDS, HEIF (HEIC, AVIF), ORF, PEF, JPEG XL.
 Improved support for some JPEG XR files.
 Fixed output of 16-bit pictures per channel. 
 
 
-0.1.0.29 - 2020.02.10
+0.1.0.29 - 2020-02-10
 ----------------------
 The first official release.
