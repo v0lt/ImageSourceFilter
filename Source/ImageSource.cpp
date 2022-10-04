@@ -323,7 +323,8 @@ CImageStream::CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr)
 			name,
 			nullptr,
 			GENERIC_READ,
-			WICDecodeMetadataCacheOnLoad,
+			// Specify WICDecodeMetadataCacheOnDemand or some JPEGs will fail to load with a WINCODEC_ERR_PROPERTYUNEXPECTEDTYPE error.
+			WICDecodeMetadataCacheOnDemand,
 			&pDecoder
 		);
 		DLogIf(FAILED(hr), L"CreateDecoderFromFilename failed with error {}", HR2Str(hr));
