@@ -1,5 +1,5 @@
 /*
-* (C) 2020-2021 see Authors.txt
+* (C) 2020-2022 see Authors.txt
 *
 * This file is part of MPC-BE.
 *
@@ -29,6 +29,10 @@ DEFINE_GUID(GUID_ContainerFormatWebp2, 0x1f122879, 0xeba0, 0x4670, 0x98, 0xc5, 0
 
 // CopyTrans HEIC for Windows
 DEFINE_GUID(GUID_ContainerFormatHeic, 0x502a9ac6, 0x64f9, 0x43cb, 0x82, 0x44, 0xba, 0x76, 0x6b, 0x0c, 0x1b, 0x0b);
+
+// Windows Imaging Component for HEIC file
+// https://github.com/prsyahmi/wic_heic/blob/master/wic_heic/wic_heic.h
+DEFINE_GUID(GUID_ContainerFormatHeic2, 0x98ce31dd, 0x5435, 0x41bd, 0xa1, 0xaf, 0x29, 0xc3, 0x87, 0xc2, 0x01, 0x35);
 
 // Adobe DNG Codec
 DEFINE_GUID(GUID_ContainerFormatAdng2, 0xcba90bec, 0x46e4, 0x4cb9, 0x82, 0x4f, 0x41, 0xa0, 0x9a, 0x12, 0x3c, 0x8d);
@@ -64,7 +68,8 @@ static const wchar_t* ContainerFormat2Str(const GUID guid)
 	else if (guid == GUID_ContainerFormatHeif) { pStr = L"HEIF"; }
 	else if (guid == GUID_ContainerFormatWebp
 		|| guid == GUID_ContainerFormatWebp2)  { pStr = L"WebP"; }
-	else if (guid == GUID_ContainerFormatHeic) { pStr = L"HEIC"; }
+	else if (guid == GUID_ContainerFormatHeic
+		|| guid == GUID_ContainerFormatHeic2)  { pStr = L"HEIC"; }
 	else if (guid == GUID_ContainerFormatRaw)  { pStr = L"RAW"; }
 	else if (guid == GUID_ContainerFormatArw)  { pStr = L"ARW"; }
 	else if (guid == GUID_ContainerFormatJXL)  { pStr = L"JPEG XL"; }
