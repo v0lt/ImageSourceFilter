@@ -63,11 +63,14 @@ STDAPI DllRegisterServer()
 		L"0,2,,FF0A",                      // JPEG XL codestream
 		L"0,12,,0000000C4A584C200D0A870A", // JPEG XL container
 		L"0,4,,44445320",                  // DDS
+		L"0,4,,49491A00",                  // CRW (Canon)
 		L"0,4,,49492A00",                  // TIFF, DNG and other
 		L"0,4,,4949524F",                  // ORF (Olympus)
 		L"0,4,,49495500",                  // RW2 (Panasonic), RAW (Leica)
 		L"0,4,,4949BC01",                  // HD Photo/JPEG XR
-		L"0,4,,4D4D002A",                  // PEF (Pentax), NEF (Nikon), SRW (Samsung)
+		L"0,4,,4D4D002A",                  // PEF (Pentax), NEF (Nikon), SRW (Samsung), ERF (Epson)
+		L"0,16,,46554A4946494C4D4343442D52415720", // RAF (Fuji)
+		L"0,4,,004D524D",                  // MRW (Minolta)
 	};
 
 	HKEY hKey;
