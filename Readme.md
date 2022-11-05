@@ -26,10 +26,11 @@ MPC-BE video player - <https://sourceforge.net/projects/mpcbe/>
 ## Additional components for Windows Imaging Component
 
 Extensions for Windows 10:  
-[Webp Image Extensions](https://www.microsoft.com/en-us/p/webp-image-extensions/9pg2dk419drg) (.webp)  
-[HEIF Image Extensions](https://www.microsoft.com/en-us/p/heif-image-extensions/9pmmsr1cgpwg) (.heif, .heic, .avif)  
-├ [HEVC Video Extensions](https://www.microsoft.com/en-us/p/hevc-video-extensions/9nmzlz57r3t7) (needed to open .heic)  
-└ [AV1 Video Extension](https://www.microsoft.com/en-us/p/av1-video-extension/9mvzqvxjbq9v) (needed to open .avif)  
+[Webp Image Extensions](https://apps.microsoft.com/store/detail/webp-image-extensions/9pg2dk419drg) (.webp)  
+[HEIF Image Extensions](https://apps.microsoft.com/store/detail/heif-image-extensions/9pmmsr1cgpwg) (.heif, .heic, .avif)  
+├ [HEVC Video Extensions](https://apps.microsoft.com/store/detail/hevc-video-extensions/9nmzlz57r3t7) (needed to open .heic)  
+└ [AV1 Video Extension](https://apps.microsoft.com/store/detail/av1-video-extension/9mvzqvxjbq9v) (needed to open .avif)  
+[Raw Image Extension](https://apps.microsoft.com/store/detail/raw-image-extension/9nctdw2w1bh8)
 
 Codecs for WIC:  
 [Microsoft Camera Codec Pack for Windows 7 and Vista](https://web.archive.org/web/20200109020824/https://www.microsoft.com/en-us/download/details.aspx?id=26829)  

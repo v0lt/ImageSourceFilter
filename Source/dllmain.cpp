@@ -56,17 +56,18 @@ STDAPI DllRegisterServer()
 		L"0,8,,89504E470D0A1A0A",          // PNG
 		L"0,3,,FFD8FF",                    // JPEG
 		L"0,2,,424D,6,4,,00000000",        // BMP
-		L"0,4,,49492A00",                  // TIFF, DNG and other
-		L"0,4,,4949BC01",                  // HD Photo/JPEG XR
 		L"0,4,,52494646,8,4,,57454250",    // WebP
 		L"4,8,,667479706D696631,16,8,,6D69663168656963", // HEIF (.heic)
 		L"4,8,,6674797068656963,16,8,,6D69663168656963", // HEIF (.heif)
 		L"4,8,,6674797061766966,16,8,,6D69663161766966", // AVIF (.avif)
-		L"0,4,,44445320",                  // DDS
-		L"0,4,,4949524F",                  // ORF
-		L"0,4,,4D4D002A",                  // PEF
 		L"0,2,,FF0A",                      // JPEG XL codestream
 		L"0,12,,0000000C4A584C200D0A870A", // JPEG XL container
+		L"0,4,,44445320",                  // DDS
+		L"0,4,,49492A00",                  // TIFF, DNG and other
+		L"0,4,,4949524F",                  // ORF (Olympus)
+		L"0,4,,49495500",                  // RW2 (Panasonic), RAW (Leica)
+		L"0,4,,4949BC01",                  // HD Photo/JPEG XR
+		L"0,4,,4D4D002A",                  // PEF (Pentax), NEF (Nikon), SRW (Samsung)
 	};
 
 	HKEY hKey;
