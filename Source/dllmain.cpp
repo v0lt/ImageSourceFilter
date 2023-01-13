@@ -1,5 +1,5 @@
 /*
- * (C) 2020-2022 see Authors.txt
+ * (C) 2020-2023 see Authors.txt
  *
  * This file is part of MPC-BE.
  *
@@ -57,9 +57,9 @@ STDAPI DllRegisterServer()
 		L"0,3,,FFD8FF",                    // JPEG
 		L"0,2,,424D,6,4,,00000000",        // BMP
 		L"0,4,,52494646,8,4,,57454250",    // WebP
-		L"4,8,,667479706D696631,16,8,,6D69663168656963", // HEIF (.heic)
-		L"4,8,,6674797068656963,16,8,,6D69663168656963", // HEIF (.heif)
-		L"4,8,,6674797061766966,16,8,,6D69663161766966", // AVIF (.avif)
+		L"4,8,,667479706D696631",          // HEIF (....ftypmif1)
+		L"4,8,,6674797068656963",          // HEIC (....ftypheic)
+		L"4,8,,6674797061766966",          // AVIF (....ftypavif)
 		L"0,2,,FF0A",                      // JPEG XL codestream
 		L"0,12,,0000000C4A584C200D0A870A", // JPEG XL container
 		L"0,4,,44445320",                  // DDS
