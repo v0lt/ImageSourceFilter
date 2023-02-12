@@ -1,6 +1,8 @@
 0.2.6 dev
 ----------------------
-
+Fixed opening of some JPEG files.
+Expanded support for RAW images from cameras.
+Improved recognition of HEIF, HEIC, AVIF files.
 
 0.2.5.119 - 2022-07-15
 ----------------------
