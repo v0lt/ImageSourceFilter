@@ -1,4 +1,4 @@
-0.2.6 dev
+0.2.7.130 - 2023-02-12
 ----------------------
 Fixed opening of some JPEG files.
 Expanded support for RAW images from cameras.
