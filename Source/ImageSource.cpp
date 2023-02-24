@@ -429,8 +429,13 @@ CImageStream::CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr)
 		vih2->bmiHeader.biHeight      = -(long)m_Height;
 		vih2->bmiHeader.biPlanes      = 1;
 		vih2->bmiHeader.biBitCount    = bitdepth1;
-		vih2->bmiHeader.biCompression = BI_RGB;
 		vih2->bmiHeader.biSizeImage   = bufferSize1;
+
+		if (m_subtype1 == FOURCCMap(m_subtype1.Data1)) { // {xxxxxxxx-0000-0010-8000-00AA00389B71}
+			vih2->bmiHeader.biCompression = m_subtype1.Data1;
+		} else {
+			vih2->bmiHeader.biCompression = BI_RGB;
+		}
 
 		m_mts.push_back(mt);
 
@@ -447,6 +452,7 @@ CImageStream::CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr)
 			mt.SetSampleSize(bufferSize2);
 
 			vih2->bmiHeader.biBitCount = bitdepth2;
+			vih2->bmiHeader.biCompression = BI_RGB;
 			vih2->bmiHeader.biSizeImage = bufferSize2;
 
 			m_mts.push_back(mt);
