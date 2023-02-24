@@ -426,14 +426,15 @@ CImageStream::CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr)
 		vih2->AvgTimePerFrame         = m_AvgTimePerFrame;
 		vih2->bmiHeader.biSize        = sizeof(vih2->bmiHeader);
 		vih2->bmiHeader.biWidth       = m_Width;
-		vih2->bmiHeader.biHeight      = -(long)m_Height;
 		vih2->bmiHeader.biPlanes      = 1;
 		vih2->bmiHeader.biBitCount    = bitdepth1;
 		vih2->bmiHeader.biSizeImage   = bufferSize1;
 
 		if (m_subtype1 == FOURCCMap(m_subtype1.Data1)) { // {xxxxxxxx-0000-0010-8000-00AA00389B71}
+			vih2->bmiHeader.biHeight      = m_Height;
 			vih2->bmiHeader.biCompression = m_subtype1.Data1;
 		} else {
+			vih2->bmiHeader.biHeight      = -(long)m_Height;
 			vih2->bmiHeader.biCompression = BI_RGB;
 		}
 
@@ -446,14 +447,16 @@ CImageStream::CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr)
 			const UINT stride2     = ALIGN(m_Width * bitdepth2 / 8, 4);
 			const UINT bufferSize2 = stride2 * m_Height;
 
-			ASSERT(bitdepth2 == 32); // using RGB32 for additional media format
+			// using RGB32 for additional media format
+			ASSERT(m_subtype2 == MEDIASUBTYPE_RGB32 && bitdepth2 == 32);
 
 			mt.SetSubtype(&m_subtype2);
 			mt.SetSampleSize(bufferSize2);
 
-			vih2->bmiHeader.biBitCount = bitdepth2;
+			vih2->bmiHeader.biHeight      = -(long)m_Height;
+			vih2->bmiHeader.biBitCount    = bitdepth2;
 			vih2->bmiHeader.biCompression = BI_RGB;
-			vih2->bmiHeader.biSizeImage = bufferSize2;
+			vih2->bmiHeader.biSizeImage   = bufferSize2;
 
 			m_mts.push_back(mt);
 
@@ -686,7 +689,7 @@ HRESULT CImageStream::CheckMediaType(const CMediaType* pmt)
 		&& pmt->formattype == FORMAT_VideoInfo2) {
 
 		VIDEOINFOHEADER2* vih2 = (VIDEOINFOHEADER2*)pmt->Format();
-		if (vih2->bmiHeader.biWidth >= (long)m_Width && vih2->bmiHeader.biHeight == -(long)m_Height) {
+		if (vih2->bmiHeader.biWidth >= (long)m_Width && (UINT)std::abs(vih2->bmiHeader.biHeight) == m_Height) {
 			return S_OK;
 		}
 	}
