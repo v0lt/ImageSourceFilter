@@ -1,5 +1,5 @@
 /*
- * (C) 2020-2022 see Authors.txt
+ * (C) 2020-2023 see Authors.txt
  *
  * This file is part of MPC-BE.
  *
@@ -408,8 +408,9 @@ CImageStream::CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr)
 			m_rtDuration = 0;
 		}
 
-		UINT bitdepth1 = GetPixelFormatDesc(m_OuputPixFmt1)->depth;
-		UINT bufferSize1 = m_Width * m_Height * bitdepth1 / 8;
+		const UINT bitdepth1   = GetPixelFormatDesc(m_OuputPixFmt1)->depth;
+		const UINT stride1     = ALIGN(m_Width * bitdepth1 / 8, 4);
+		const UINT bufferSize1 = stride1 * m_Height;
 
 		CMediaType mt;
 		mt.SetType(&MEDIATYPE_Video);
@@ -436,9 +437,11 @@ CImageStream::CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr)
 		m_maxBufferSize = bufferSize1;
 
 		if (m_subtype2 != m_subtype1) {
-			UINT bitdepth2 = GetPixelFormatDesc(m_OuputPixFmt2)->depth;
-			ASSERT(bitdepth2 == 32);
-			UINT bufferSize2 = m_Width * m_Height * bitdepth2 / 8;
+			const UINT bitdepth2   = GetPixelFormatDesc(m_OuputPixFmt2)->depth;
+			const UINT stride2     = ALIGN(m_Width * bitdepth2 / 8, 4);
+			const UINT bufferSize2 = stride2 * m_Height;
+
+			ASSERT(bitdepth2 == 32); // using RGB32 for additional media format
 
 			mt.SetSubtype(&m_subtype2);
 			mt.SetSampleSize(bufferSize2);
@@ -620,7 +623,7 @@ HRESULT CImageStream::FillBuffer(IMediaSample* pSample)
 		const UINT w = vih2->bmiHeader.biWidth;
 		const UINT h = abs(vih2->bmiHeader.biHeight);
 		const UINT bpp = vih2->bmiHeader.biBitCount;
-		const UINT stride = w * bpp / 8;
+		const UINT stride = ALIGN(w * bpp / 8, 4);
 
 		if (w < m_Width || h != m_Height || outSize < (long)vih2->bmiHeader.biSizeImage) {
 			return S_FALSE;
