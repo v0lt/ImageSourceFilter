@@ -1,5 +1,5 @@
 /*
-* (C) 2020 see Authors.txt
+* (C) 2020-2023 see Authors.txt
 *
 * This file is part of MPC-BE.
 *
@@ -65,34 +65,22 @@ DEFINE_GUID(MEDIASUBTYPE_b48r,         0x72383462, 0x0000, 0x0010, 0x80, 0x00, 0
 DEFINE_GUID(MEDIASUBTYPE_b64a,         0x61343662, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71);
 DEFINE_GUID(MEDIASUBTYPE_LAV_RAWVIDEO, 0xd80fa03c, 0x35c1, 0x4fa1, 0x8c, 0x8e, 0x37, 0x5c, 0x86, 0x67, 0x16, 0x6e);
 
-#define VIDEOTRANSFERMATRIX_BT2020_10 4
-#define VIDEOTRANSFERMATRIX_BT2020_12 5
-#define VIDEOTRANSFERMATRIX_FCC       6 // non-standard
-#define VIDEOTRANSFERMATRIX_YCgCo     7 // non-standard
-
-#define VIDEOPRIMARIES_BT2020  9
-#define VIDEOPRIMARIES_XYZ    10
-#define VIDEOPRIMARIES_DCI_P3 11
-#define VIDEOPRIMARIES_ACES   12
-
-#define VIDEOTRANSFUNC_Log_100     9
-#define VIDEOTRANSFUNC_Log_316    10
-#define VIDEOTRANSFUNC_709_sym    11
-#define VIDEOTRANSFUNC_2020_const 12
-#define VIDEOTRANSFUNC_2020       13
-#define VIDEOTRANSFUNC_26         14
-#define VIDEOTRANSFUNC_2084       15
-#define VIDEOTRANSFUNC_HLG        16
-#define VIDEOTRANSFUNC_10_rel     17
+// non-standard values for Transfer Matrix
+#define VIDEOTRANSFERMATRIX_FCC     6
+#define VIDEOTRANSFERMATRIX_YCgCo   7
 
 // A byte that is not initialized to std::vector when using the resize method.
+// Note: can be slow in debug mode.
 struct NoInitByte
 {
 	uint8_t value;
+#pragma warning(push)
+#pragma warning(disable:26495)
 	NoInitByte() {
 		// do nothing
-		static_assert(sizeof(*this) == sizeof (value), "invalid size");
+		static_assert(sizeof(*this) == sizeof(value), "invalid size");
 	}
+#pragma warning(pop)
 };
 
 template <typename T>
@@ -119,11 +107,14 @@ LPCWSTR GetWindowsVersion();
 
 inline std::wstring GUIDtoWString(const GUID& guid)
 {
-	WCHAR buff[40];
-	if (StringFromGUID2(guid, buff, 39) <= 0) {
-		StringFromGUID2(GUID_NULL, buff, 39);
+	std::wstring str(39, 0);
+	int ret = StringFromGUID2(guid, &str[0], 39);
+	if (ret) {
+		str.resize(ret - 1);
+	} else {
+		str.clear();
 	}
-	return std::wstring(buff);
+	return str;
 }
 
 std::wstring HR2Str(const HRESULT hr);
