@@ -90,7 +90,7 @@ STDMETHODIMP CMpcImageSource::Load(LPCOLESTR pszFileName, const AM_MEDIA_TYPE* p
 	}
 
 	HRESULT hr = S_OK;
-	if (!(new CImageStream(pszFileName, this, &hr))) {
+	if (!(new(std::nothrow) CImageStream(pszFileName, this, &hr))) {
 		return E_OUTOFMEMORY;
 	}
 
