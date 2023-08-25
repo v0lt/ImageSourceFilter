@@ -303,11 +303,11 @@ CImageStream::CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr)
 				// Codec name
 				hr2 = pCodecInfo->GetFriendlyName(std::size(buffer)-1, buffer, &cbActual);
 				if (SUCCEEDED(hr2)) {
-					dbgstr += fmt::format(L"\n  {}", buffer);
+					dbgstr += std::format(L"\n  {}", buffer);
 					// File extensions
 					hr2 = pCodecInfo->GetFileExtensions(std::size(buffer) - 1, buffer, &cbActual);
 					if (SUCCEEDED(hr2)) {
-						dbgstr += fmt::format(L" {}", buffer);
+						dbgstr += std::format(L" {}", buffer);
 					}
 				}
 				pElement = nullptr;
