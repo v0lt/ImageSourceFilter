@@ -1,5 +1,5 @@
 /*
-* (C) 2020-2022 see Authors.txt
+* (C) 2020-2024 see Authors.txt
 *
 * This file is part of MPC-BE.
 *
@@ -95,6 +95,9 @@ std::wstring HR2Str(const HRESULT hr)
 		UNPACK_HR_WIN32(ERROR_MOD_NOT_FOUND);
 		UNPACK_HR_WIN32(ERROR_INVALID_WINDOW_HANDLE);
 		UNPACK_HR_WIN32(ERROR_CLASS_ALREADY_EXISTS);
+#endif
+#ifdef _MFERROR_H
+		UNPACK_VALUE(MF_E_INVALID_FORMAT);
 #endif
 #ifdef _D3D9_H_
 		// some D3DERR values https://docs.microsoft.com/en-us/windows/desktop/direct3d9/d3derr

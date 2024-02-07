@@ -1,5 +1,5 @@
 /*
- * (C) 2020-2023 see Authors.txt
+ * (C) 2020-2024 see Authors.txt
  *
  * This file is part of MPC-BE.
  *
@@ -713,12 +713,14 @@ HRESULT CImageStream::SetMediaType(const CMediaType* pMediaType)
 			if (pixelFormat != m_OuputPixFmt1) {
 				m_pBitmap.Release();
 				hr = m_pWICFactory->CreateBitmapFromSource(m_pBitmap1, WICBitmapCacheOnLoad, &m_pBitmap);
+				DLogIf(FAILED(hr), L"CreateBitmapFromSource failed with error {}", HR2Str(hr));
 			}
 		}
 		else if (m_mt.subtype == m_subtype2) {
 			if (pixelFormat != m_OuputPixFmt2) {
 				m_pBitmap.Release();
 				hr = m_pWICFactory->CreateBitmapFromSource(m_pBitmap2, WICBitmapCacheOnLoad, &m_pBitmap);
+				DLogIf(FAILED(hr), L"CreateBitmapFromSource failed with error {}", HR2Str(hr));
 			}
 		}
 		else {
