@@ -171,7 +171,7 @@ STDMETHODIMP CMpcImageSource::SaveSettings()
 
 // IExFilterConfig
 
-STDMETHODIMP CMpcImageSource::GetInt64(LPCSTR field, __int64 *value)
+STDMETHODIMP CMpcImageSource::Flt_GetInt64(LPCSTR field, __int64 *value)
 {
 	CheckPointer(value, E_POINTER);
 

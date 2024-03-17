@@ -1,5 +1,5 @@
 /*
- * (C) 2020-2022 see Authors.txt
+ * (C) 2020-2024 see Authors.txt
  *
  * This file is part of MPC-BE.
  *
@@ -69,7 +69,7 @@ public:
 	STDMETHODIMP SaveSettings() override;
 
 	// IExFilterConfig
-	STDMETHODIMP GetInt64(LPCSTR field, __int64* value) override;
+	STDMETHODIMP Flt_GetInt64(LPCSTR field, __int64* value) override;
 };
 
 class CImageStream
