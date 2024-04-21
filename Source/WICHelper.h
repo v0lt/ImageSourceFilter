@@ -1,5 +1,5 @@
 /*
-* (C) 2020-2022 see Authors.txt
+* (C) 2020-2024 see Authors.txt
 *
 * This file is part of MPC-BE.
 *
@@ -44,6 +44,10 @@ DEFINE_GUID(GUID_ContainerFormatArw, 0x1d3b9fcd, 0xf3ab, 0x416a, 0x85, 0x69, 0xa
 // https://github.com/saschanaz/jxl-winthumb/blob/main/src/lib.rs
 DEFINE_GUID(GUID_ContainerFormatJXL, 0x81e337bc, 0xc1d1, 0x4dee, 0xa1, 0x7c, 0x40, 0x20, 0x41, 0xba, 0x9b, 0x5e);
 
+// JPEG-LS Decoder
+// https://github.com/team-charls/jpegls-wic-codec/blob/main/src/guids.ixx
+DEFINE_GUID(GUID_ContainerFormatJpegLS, 0x52c25458, 0x282d, 0x4ef4, 0xa6, 0x9f, 0x2, 0x1b, 0xb2, 0x98, 0x45, 0x43);
+
 enum ColorSystem_t {
 	CS_YUV,
 	CS_RGB,
@@ -55,24 +59,25 @@ static const wchar_t* ContainerFormat2Str(const GUID guid)
 {
 	const wchar_t* pStr;
 
-	if (guid == GUID_ContainerFormatBmp)       { pStr = L"BMP"; }
-	else if (guid == GUID_ContainerFormatPng)  { pStr = L"PNG"; }
-	else if (guid == GUID_ContainerFormatIco)  { pStr = L"ICO"; }
-	else if (guid == GUID_ContainerFormatJpeg) { pStr = L"JPEG"; }
-	else if (guid == GUID_ContainerFormatTiff) { pStr = L"TIFF"; }
-	else if (guid == GUID_ContainerFormatGif)  { pStr = L"GIF"; }
-	else if (guid == GUID_ContainerFormatWmp)  { pStr = L"HD Photo/JPEG XR"; }
-	else if (guid == GUID_ContainerFormatDds)  { pStr = L"DDS"; }
+	if      (guid == GUID_ContainerFormatBmp)    { pStr = L"BMP"; }
+	else if (guid == GUID_ContainerFormatPng)    { pStr = L"PNG"; }
+	else if (guid == GUID_ContainerFormatIco)    { pStr = L"ICO"; }
+	else if (guid == GUID_ContainerFormatJpeg)   { pStr = L"JPEG"; }
+	else if (guid == GUID_ContainerFormatTiff)   { pStr = L"TIFF"; }
+	else if (guid == GUID_ContainerFormatGif)    { pStr = L"GIF"; }
+	else if (guid == GUID_ContainerFormatWmp)    { pStr = L"HD Photo/JPEG XR"; }
+	else if (guid == GUID_ContainerFormatDds)    { pStr = L"DDS"; }
 	else if (guid == GUID_ContainerFormatAdng
-		|| guid == GUID_ContainerFormatAdng2)  { pStr = L"DNG"; }
-	else if (guid == GUID_ContainerFormatHeif) { pStr = L"HEIF"; }
+		 ||  guid == GUID_ContainerFormatAdng2)  { pStr = L"DNG"; }
+	else if (guid == GUID_ContainerFormatHeif)   { pStr = L"HEIF"; }
 	else if (guid == GUID_ContainerFormatWebp
-		|| guid == GUID_ContainerFormatWebp2)  { pStr = L"WebP"; }
+		 ||  guid == GUID_ContainerFormatWebp2)  { pStr = L"WebP"; }
 	else if (guid == GUID_ContainerFormatHeic
-		|| guid == GUID_ContainerFormatHeic2)  { pStr = L"HEIC"; }
-	else if (guid == GUID_ContainerFormatRaw)  { pStr = L"RAW"; }
-	else if (guid == GUID_ContainerFormatArw)  { pStr = L"ARW"; }
-	else if (guid == GUID_ContainerFormatJXL)  { pStr = L"JPEG XL"; }
+		 ||  guid == GUID_ContainerFormatHeic2)  { pStr = L"HEIC"; }
+	else if (guid == GUID_ContainerFormatRaw)    { pStr = L"RAW"; }
+	else if (guid == GUID_ContainerFormatArw)    { pStr = L"ARW"; }
+	else if (guid == GUID_ContainerFormatJXL)    { pStr = L"JPEG XL"; }
+	else if (guid == GUID_ContainerFormatJpegLS) { pStr = L"JPEG-LS"; }
 	else { pStr = L"Unknown"; }
 
 	return pStr;
