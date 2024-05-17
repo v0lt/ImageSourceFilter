@@ -35,6 +35,7 @@
 #include <algorithm>
 #include <numeric>
 #include <vector>
+#include <string>
 #include <format>
 
 #include "../external/BaseClasses/streams.h"
