@@ -9,7 +9,7 @@ MPC Image Source is a free and open-source DirectShow filter. The filter allows 
 
 ## License
 
-MPC Image Source's code is licensed under [GPL v3].
+MPC Image Source's code is licensed under [LGPL v2.1].
 
 ## Links
 
