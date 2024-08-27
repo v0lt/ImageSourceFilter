@@ -108,6 +108,7 @@ static const PixelFormatDesc s_PixelFormatDescs[] = {
 	{ GUID_WICPixelFormat64bppPRGBA,            L"64bppPRGBA",            16,  64, CS_RGB,  true  },
 	{ GUID_WICPixelFormat64bppPBGRA,            L"64bppPBGRA",            16,  64, CS_RGB,  true  },
 	{ GUID_WICPixelFormat64bppRGBAHalf,         L"64bppRGBAHalf",         16,  64, CS_RGB,  true  },
+	{ GUID_WICPixelFormat96bppRGBFloat,         L"96bppRGBFloat",         32,  96, CS_RGB,  false },
 	{ GUID_WICPixelFormat128bppRGBAFloat,       L"128bppRGBAFloat",       32, 128, CS_RGB,  true  },
 	{ GUID_WICPixelFormat32bppBGR101010,        L"32bppBGR101010",        10,  32, CS_RGB,  false },
 	{ GUID_WICPixelFormat32bppR10G10B10A2HDR10, L"32bppR10G10B10A2HDR10", 10,  32, CS_RGB,  false },
