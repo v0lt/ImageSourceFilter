@@ -332,6 +332,36 @@ CImageStream::CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr)
 		if (SUCCEEDED(hr)) {
 			DLog(L"Frame count: {}", frameCount);
 		}
+
+		UINT cActualCount = 0;
+		hr = pFrameDecode->GetColorContexts(0, nullptr, &cActualCount);
+		if (SUCCEEDED(hr) && cActualCount) {
+			std::vector<CComPtr<IWICColorContext>> pColorContexts(cActualCount);
+			{
+				std::vector<IWICColorContext*> pTempContexts(cActualCount);
+				for (UINT i = 0; i < cActualCount; i++) {
+					hr = m_pWICFactory->CreateColorContext(&pColorContexts[i]);
+					if (FAILED(hr)) {
+						break;
+					}
+					pTempContexts[i] = pColorContexts[i];
+				}
+				hr = pFrameDecode->GetColorContexts(cActualCount, &pTempContexts[0], &cActualCount);
+			}
+			if (SUCCEEDED(hr)) {
+				for (UINT i = 0; i < cActualCount; i++) {
+					WICColorContextType colorContextType = {};
+					hr = pColorContexts[i]->GetType(&colorContextType);
+					if (SUCCEEDED(hr) && colorContextType == WICColorContextExifColorSpace) {
+						UINT exifColorSpace = 0;
+						hr = pColorContexts[i]->GetExifColorSpace(&exifColorSpace);
+						if (SUCCEEDED(hr)) {
+							DLog(L"ExifColorSpace: {}", exifColorSpace);
+						}
+					}
+				}
+			}
+		}
 	}
 #endif
 
