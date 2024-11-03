@@ -253,6 +253,67 @@ void CImageStream::SetPixelFormats(IWICBitmapFrameDecode* pFrameDecode)
 	m_subtype2 = MEDIASUBTYPE_RGB32;
 }
 
+struct WICCodecInfo_t {
+	GUID containerFormat;
+	std::wstring name;
+	std::wstring fileExts;
+	std::wstring mimeTypes;
+	std::vector<WICPixelFormatGUID> pixelFmts;
+};
+
+HRESULT WicGetCodecs(IWICImagingFactory* pWICFactory, std::vector<WICCodecInfo_t>& codecs, bool bEncoder)
+{
+	codecs.clear();
+	CComPtr<IEnumUnknown> pEnum;
+
+	HRESULT hr = pWICFactory->CreateComponentEnumerator(bEncoder ? WICEncoder : WICDecoder, WICComponentEnumerateDefault, &pEnum);
+
+	if (SUCCEEDED(hr)) {
+		GUID containerFormat = {};
+		ULONG cbFetched = 0;
+		CComPtr<IUnknown> pElement;
+
+		while (S_OK == pEnum->Next(1, &pElement, &cbFetched)) {
+			CComQIPtr<IWICBitmapCodecInfo> pCodecInfo(pElement);
+
+			HRESULT hr2 = pCodecInfo->GetContainerFormat(&containerFormat);
+			if (SUCCEEDED(hr2)) {
+				UINT cbActual = 0;
+				WICCodecInfo_t codecInfo = { containerFormat };
+
+				hr2 = pCodecInfo->GetFriendlyName(0, nullptr, &cbActual);
+				if (SUCCEEDED(hr2) && cbActual) {
+					codecInfo.name.resize(cbActual - 1);
+					hr2 = pCodecInfo->GetFriendlyName(cbActual, codecInfo.name.data(), &cbActual);
+				}
+
+				hr2 = pCodecInfo->GetFileExtensions(0, nullptr, &cbActual);
+				if (SUCCEEDED(hr2) && cbActual) {
+					codecInfo.fileExts.resize(cbActual - 1);
+					hr2 = pCodecInfo->GetFileExtensions(cbActual, codecInfo.fileExts.data(), &cbActual);
+				}
+
+				hr2 = pCodecInfo->GetMimeTypes(0, nullptr, &cbActual);
+				if (SUCCEEDED(hr2) && cbActual) {
+					codecInfo.mimeTypes.resize(cbActual - 1);
+					hr2 = pCodecInfo->GetMimeTypes(cbActual, codecInfo.mimeTypes.data(), &cbActual);
+				}
+
+				hr2 = pCodecInfo->GetPixelFormats(0, nullptr, &cbActual);
+				if (SUCCEEDED(hr2) && cbActual) {
+					codecInfo.pixelFmts.resize(cbActual);
+					hr2 = pCodecInfo->GetPixelFormats(cbActual, codecInfo.pixelFmts.data(), &cbActual);
+				}
+
+				codecs.emplace_back(codecInfo);
+			}
+			pElement.Release();
+		}
+	}
+
+	return hr;
+}
+
 CImageStream::CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr)
 	: CSourceStream(name, phr, pParent, L"Output")
 	, CSourceSeeking(name, (IPin*)this, phr, &m_cSharedState)
@@ -276,27 +337,21 @@ CImageStream::CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr)
 #ifdef _DEBUG
 	if (SUCCEEDED(hr)) {
 		std::wstring dbgstr(L"WIC Decoders:");
-		CComPtr<IEnumUnknown> pEnum;
-		DWORD dwOptions = WICComponentEnumerateDefault;
-		HRESULT hr2 = m_pWICFactory->CreateComponentEnumerator(WICDecoder, dwOptions, &pEnum);
+
+		std::vector<WICCodecInfo_t> codecs;
+		HRESULT hr2 = WicGetCodecs(m_pWICFactory, codecs, false);
 		if (SUCCEEDED(hr2)) {
-			WCHAR buffer[256]; // if not enough will be truncated
-			ULONG cbFetched = 0;
-			CComPtr<IUnknown> pElement = nullptr;
-			while (S_OK == pEnum->Next(1, &pElement, &cbFetched)) {
-				UINT cbActual = 0;
-				CComQIPtr<IWICBitmapCodecInfo> pCodecInfo(pElement);
-				// Codec name
-				hr2 = pCodecInfo->GetFriendlyName(std::size(buffer)-1, buffer, &cbActual);
-				if (SUCCEEDED(hr2)) {
-					dbgstr += std::format(L"\n  {}", buffer);
-					// File extensions
-					hr2 = pCodecInfo->GetFileExtensions(std::size(buffer) - 1, buffer, &cbActual);
-					if (SUCCEEDED(hr2)) {
-						dbgstr += std::format(L" {}", buffer);
+			for (const auto& codec : codecs) {
+				dbgstr += std::format(L"\n  {}", codec.name);
+				dbgstr += std::format(L"\n    {}", codec.fileExts);
+				if (codec.pixelFmts.size()) {
+					dbgstr.append(L"\n    ");
+					for (const auto& pixFmt : codec.pixelFmts) {
+						dbgstr += GetPixelFormatDesc(pixFmt)->str;
+						dbgstr += L',';
 					}
 				}
-				pElement = nullptr;
+				str_trim_end(dbgstr, L',');
 			}
 		}
 
