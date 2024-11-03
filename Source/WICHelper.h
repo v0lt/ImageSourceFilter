@@ -36,7 +36,7 @@ DEFINE_GUID(GUID_ContainerFormatJpegLS, 0x52c25458, 0x282d, 0x4ef4, 0xa6, 0x9f, 
 
 enum ColorSystem_t {
 	CS_YUV,
-	CS_RGB,
+	CS_RGB, // RGB or CMYK
 	CS_GRAY,
 	CS_IDX
 };
@@ -92,6 +92,7 @@ static const PixelFormatDesc s_PixelFormatDescs[] = {
 	{ GUID_WICPixelFormat16bppBGR555,           L"16bppBGR555",            5,  16, CS_RGB,  false },
 	{ GUID_WICPixelFormat16bppBGR565,           L"16bppBGR565",            6,  16, CS_RGB,  false },
 	{ GUID_WICPixelFormat16bppGray,             L"16bppGray",             16,  16, CS_GRAY, false },
+	{ GUID_WICPixelFormat32bppGrayFloat,        L"32bppGrayFloat",        32,  32, CS_GRAY, false },
 	{ GUID_WICPixelFormat24bppBGR,              L"24bppBGR",               8,  24, CS_RGB,  false },
 	{ GUID_WICPixelFormat24bppRGB,              L"24bppRGB",               8,  24, CS_RGB,  false },
 	{ GUID_WICPixelFormat32bppBGR,              L"32bppBGR",               8,  32, CS_RGB,  false },
@@ -108,10 +109,16 @@ static const PixelFormatDesc s_PixelFormatDescs[] = {
 	{ GUID_WICPixelFormat64bppPRGBA,            L"64bppPRGBA",            16,  64, CS_RGB,  true  },
 	{ GUID_WICPixelFormat64bppPBGRA,            L"64bppPBGRA",            16,  64, CS_RGB,  true  },
 	{ GUID_WICPixelFormat64bppRGBAHalf,         L"64bppRGBAHalf",         16,  64, CS_RGB,  true  },
+	{ GUID_WICPixelFormat64bppRGBAFixedPoint,   L"64bppRGBAFixedPoint",   16,  64, CS_RGB,  true  },
 	{ GUID_WICPixelFormat96bppRGBFloat,         L"96bppRGBFloat",         32,  96, CS_RGB,  false },
 	{ GUID_WICPixelFormat128bppRGBAFloat,       L"128bppRGBAFloat",       32, 128, CS_RGB,  true  },
+	{ GUID_WICPixelFormat128bppPRGBAFloat,      L"128bppPRGBAFloat",      32, 128, CS_RGB,  true  },
 	{ GUID_WICPixelFormat32bppBGR101010,        L"32bppBGR101010",        10,  32, CS_RGB,  false },
 	{ GUID_WICPixelFormat32bppR10G10B10A2HDR10, L"32bppR10G10B10A2HDR10", 10,  32, CS_RGB,  false },
+	{ GUID_WICPixelFormat32bppCMYK,             L"32bppCMYK",              8,  32, CS_RGB,  false },
+	{ GUID_WICPixelFormat40bppCMYKAlpha,        L"40bppCMYKAlpha",         8,  40, CS_RGB,  true  },
+	{ GUID_WICPixelFormat64bppCMYK,             L"64bppCMYK",             16,  64, CS_RGB,  false },
+	{ GUID_WICPixelFormat80bppCMYKAlpha,        L"80bppCMYKAlpha",        16,  80, CS_RGB,  true  },
 };
 
 static const PixelFormatDesc* GetPixelFormatDesc(const WICPixelFormatGUID guid)
