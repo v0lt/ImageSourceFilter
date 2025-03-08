@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020-2024 v0lt
+ * Copyright (C) 2020-2025 v0lt
  *
  * SPDX-License-Identifier: LGPL-2.1-only
  */
@@ -29,6 +29,9 @@ DEFINE_GUID(GUID_ContainerFormatArw, 0x1d3b9fcd, 0xf3ab, 0x416a, 0x85, 0x69, 0xa
 // jxl-winthumb WIC Decoder
 // https://github.com/saschanaz/jxl-winthumb/blob/main/src/lib.rs
 DEFINE_GUID(GUID_ContainerFormatJXL, 0x81e337bc, 0xc1d1, 0x4dee, 0xa1, 0x7c, 0x40, 0x20, 0x41, 0xba, 0x9b, 0x5e);
+
+// JPEG XL Image Extension (Windows 11 24H2)
+DEFINE_GUID(GUID_ContainerFormatJpegXL, 0xFEC14E3F, 0x427A, 0x4736, 0xAA, 0xE6, 0x27, 0xED, 0x84, 0xF6, 0x93, 0x22);
 
 // JPEG-LS Decoder
 // https://github.com/team-charls/jpegls-wic-codec/blob/main/src/guids.ixx
@@ -62,7 +65,8 @@ static const wchar_t* ContainerFormat2Str(const GUID guid)
 		 ||  guid == GUID_ContainerFormatHeic2)  { pStr = L"HEIC"; }
 	else if (guid == GUID_ContainerFormatRaw)    { pStr = L"RAW"; }
 	else if (guid == GUID_ContainerFormatArw)    { pStr = L"ARW"; }
-	else if (guid == GUID_ContainerFormatJXL)    { pStr = L"JPEG XL"; }
+	else if (guid == GUID_ContainerFormatJXL
+		 ||  guid == GUID_ContainerFormatJpegXL) { pStr = L"JPEG XL"; }
 	else if (guid == GUID_ContainerFormatJpegLS) { pStr = L"JPEG-LS"; }
 	else { pStr = L"Unknown"; }
 
