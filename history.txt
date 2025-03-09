@@ -1,5 +1,8 @@
 0.3.1 dev
 ----------------------
+Improved support for Jpeg XR (Microsoft HD Photo).
+Improved support for JPEG XL.
+Fixed registration of a filter from a folder with Unicode characters.
 
 
 0.3.0.157 - 2024-07-07
