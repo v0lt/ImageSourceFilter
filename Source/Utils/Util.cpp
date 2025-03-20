@@ -1,4 +1,4 @@
-// Copyright (c) 2020-2024 v0lt, Aleksoid
+// Copyright (c) 2020-2025 v0lt, Aleksoid
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -93,6 +93,7 @@ std::wstring HR2Str(const HRESULT hr)
 		UNPACK_VALUE(DXGI_ERROR_SDK_COMPONENT_MISSING);
 		UNPACK_VALUE(WINCODEC_ERR_COMPONENTNOTFOUND);
 		UNPACK_VALUE(WINCODEC_ERR_UNSUPPORTEDPIXELFORMAT);
+		UNPACK_VALUE(WINCODEC_ERR_UNSUPPORTEDOPERATION);
 		UNPACK_VALUE(WINCODEC_ERR_PROPERTYUNEXPECTEDTYPE);
 		// some System Error Codes https://learn.microsoft.com/en-us/windows/win32/debug/system-error-codes
 		UNPACK_HR_WIN32(ERROR_GEN_FAILURE);
