@@ -1,3 +1,7 @@
+0.3.3 dev
+----------------------
+
+
 0.3.2.180 - 2025-04-07
 ----------------------
 Improved support for Jpeg XR (Microsoft HD Photo).
