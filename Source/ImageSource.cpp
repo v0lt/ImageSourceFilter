@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020-2024 v0lt
+ * Copyright (C) 2020-2025 v0lt
  *
  * SPDX-License-Identifier: LGPL-2.1-only
  */
@@ -336,26 +336,27 @@ CImageStream::CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr)
 
 #ifdef _DEBUG
 	if (SUCCEEDED(hr)) {
-		std::wstring dbgstr(L"WIC Decoders:");
-
 		std::vector<WICCodecInfo_t> codecs;
 		HRESULT hr2 = WicGetCodecs(m_pWICFactory, codecs, false);
 		if (SUCCEEDED(hr2)) {
+			DLog(L"WIC Decoders:");
+			std::wstring dbgstr;
+
 			for (const auto& codec : codecs) {
-				dbgstr += std::format(L"\n  {}", codec.name);
-				dbgstr += std::format(L"\n    {}", codec.fileExts);
+				dbgstr += std::format(L"  {}\n", codec.name);
+				dbgstr += std::format(L"    {}\n", codec.fileExts);
 				if (codec.pixelFmts.size()) {
-					dbgstr.append(L"\n    ");
+					dbgstr.append(L"    ");
 					for (const auto& pixFmt : codec.pixelFmts) {
 						dbgstr += GetPixelFormatDesc(pixFmt)->str;
 						dbgstr += L',';
 					}
 				}
 				str_trim_end(dbgstr, L',');
+				dbgstr += L"\n";
 			}
+			OutputDebugStringW(dbgstr.c_str());
 		}
-
-		DLog(dbgstr);
 	}
 #endif
 
