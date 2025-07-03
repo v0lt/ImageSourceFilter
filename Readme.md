@@ -40,5 +40,6 @@ Codecs for WIC:
 [CopyTrans HEIC for Windows](https://www.copytrans.net/copytransheic/)  
 [Windows Imaging Component for HEIC file](https://github.com/prsyahmi/wic_heic)  
 [jxl-winthumb WIC Decoder](https://github.com/saschanaz/jxl-winthumb)  
+[JPEG-LS Windows Imaging Component Codec](https://github.com/team-charls/jpegls-wic-codec)  
 [Adobe DNG Codec](http://download.adobe.com/pub/adobe/dng/win/DNGCodec_2_0_Installer.exe)  
 Sony RAW Driver at [free-codecs.com](https://www.free-codecs.com/download/sony_raw_codec.htm) and [software.informer.com](https://sony-raw-driver.software.informer.com/)
