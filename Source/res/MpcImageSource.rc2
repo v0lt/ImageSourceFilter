@@ -47,7 +47,7 @@ BEGIN
             VALUE "FileDescription", "MPC Image Source"
             VALUE "FileVersion", VERSION_STR
             VALUE "InternalName", "MpcImageSource"
-            VALUE "LegalCopyright", "Copyright 2020-2024"
+            VALUE "LegalCopyright", "Copyright 2020-2026"
 #ifdef _WIN64
 
             VALUE "OriginalFilename", "MpcImageSource64.ax"
