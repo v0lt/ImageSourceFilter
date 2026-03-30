@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020-2024 v0lt
+ * Copyright (C) 2020-2026 v0lt
  *
  * SPDX-License-Identifier: LGPL-2.1-only
  */
@@ -29,6 +29,7 @@ private:
 	// Options
 	Settings_t m_Sets;
 
+	CImageStream* m_pin = nullptr;
 	std::wstring m_fn;
 
 public:
@@ -53,6 +54,7 @@ public:
 	STDMETHODIMP_(void) GetSettings(Settings_t& setings) override;
 	STDMETHODIMP_(void) SetSettings(const Settings_t setings) override;
 	STDMETHODIMP SaveSettings() override;
+	STDMETHODIMP GetInfo(std::wstring& str) override;
 
 	// IExFilterConfig
 	STDMETHODIMP Flt_GetInt64(LPCSTR field, __int64* value) override;
@@ -90,6 +92,8 @@ private:
 	GUID m_subtype1 = GUID_NULL;
 	GUID m_subtype2 = GUID_NULL;
 
+	std::wstring m_strInfo;
+
 	HRESULT OnThreadStartPlay() override;
 	HRESULT OnThreadCreate() override;
 
@@ -115,4 +119,6 @@ public:
 	HRESULT GetMediaType(int iPosition, CMediaType* pmt) override;
 
 	STDMETHODIMP Notify(IBaseFilter* pSender, Quality q) override;
+
+	const wchar_t* GetInfoStr();
 };

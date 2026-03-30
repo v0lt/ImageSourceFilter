@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020-2025 v0lt
+ * Copyright (C) 2020-2026 v0lt
  *
  * SPDX-License-Identifier: LGPL-2.1-only
  */
@@ -76,7 +76,9 @@ STDMETHODIMP CMpcImageSource::Load(LPCOLESTR pszFileName, const AM_MEDIA_TYPE* p
 	}
 
 	HRESULT hr = S_OK;
-	if (!(new(std::nothrow) CImageStream(pszFileName, this, &hr))) {
+
+	m_pin = new(std::nothrow) CImageStream(pszFileName, this, &hr);
+	if (!m_pin) {
 		return E_OUTOFMEMORY;
 	}
 
@@ -153,6 +155,18 @@ STDMETHODIMP CMpcImageSource::SaveSettings()
 	}
 
 	return S_OK;
+}
+
+STDMETHODIMP CMpcImageSource::GetInfo(std::wstring& str)
+{
+	if (GetActive()) {
+		str.assign(m_pin->GetInfoStr());
+		return S_OK;
+	}
+	else {
+		str.assign(L"filter is not active");
+		return S_FALSE;
+	}
 }
 
 // IExFilterConfig
@@ -381,6 +395,37 @@ CImageStream::CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr)
 		hr = pDecoder->GetFrame(0, &pFrameDecode);
 	}
 
+	if (SUCCEEDED(hr)) {
+		CComQIPtr<IWICBitmapDecoderInfo> pDecoderInfo;
+
+		hr = pDecoder->GetDecoderInfo(&pDecoderInfo);
+		if (SUCCEEDED(hr)) {
+			UINT cbActual = 0;
+			std::wstring str;;
+
+			hr = pDecoderInfo->GetFriendlyName(0, nullptr, &cbActual);
+			if (SUCCEEDED(hr) && cbActual) {
+				str.resize(cbActual - 1);
+				hr = pDecoderInfo->GetFriendlyName(cbActual, str.data(), &cbActual);
+				if (SUCCEEDED(hr)) {
+					m_strInfo.append(str);
+					m_strInfo += ('\n');
+				}
+			}
+
+			hr = pDecoderInfo->GetMimeTypes(0, nullptr, &cbActual);
+			if (SUCCEEDED(hr) && cbActual) {
+				str.resize(cbActual - 1);
+				hr = pDecoderInfo->GetMimeTypes(cbActual, str.data(), &cbActual);
+				if (SUCCEEDED(hr)) {
+					m_strInfo.append(L"MIME types: ");
+					m_strInfo.append(str);
+					m_strInfo += ('\n');
+				}
+			}
+		}
+	}
+
 #ifdef _DEBUG
 	if (SUCCEEDED(hr)) {
 		UINT frameCount = 0;
@@ -401,7 +446,10 @@ CImageStream::CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr)
 		m_pBitmap1 = pFrameDecode;
 
 		hr = m_pBitmap1->GetSize(&m_Width, &m_Height);
-		DLogIf(SUCCEEDED(hr), L"Image frame size: {} x {}", m_Width, m_Height);
+		if (SUCCEEDED(hr)) {
+			DLog(L"Image frame size: {} x {}", m_Width, m_Height);
+			m_strInfo += std::format(L"Size: {} x {}", m_Width, m_Height);
+		}
 	}
 
 	if (SUCCEEDED(hr)) {
@@ -429,10 +477,14 @@ CImageStream::CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr)
 					m_Width = w;
 					m_Height = h;
 					m_pBitmap1 = pScaler;
+
+					m_strInfo += std::format(L" / {} -> {} x {}", divider, w, h);
 				}
 				pScaler->Release();
 			}
 		}
+		m_strInfo.append(L"\nFormat: ");
+		m_strInfo.append(m_DecodePixFmtDesc.str);
 
 		if (!IsEqualGUID(m_OuputPixFmt1, m_OuputPixFmt2)){
 			hr = WICConvertBitmapSource(m_OuputPixFmt2, m_pBitmap1, &m_pBitmap2);
@@ -780,4 +832,9 @@ HRESULT CImageStream::SetMediaType(const CMediaType* pMediaType)
 STDMETHODIMP CImageStream::Notify(IBaseFilter* pSender, Quality q)
 {
 	return E_NOTIMPL;
+}
+
+const wchar_t* CImageStream::GetInfoStr()
+{
+	return m_strInfo.c_str();
 }

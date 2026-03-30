@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020-2024 v0lt
+ * Copyright (C) 2020-2026 v0lt
  *
  * SPDX-License-Identifier: LGPL-2.1-only
  */
@@ -140,7 +140,13 @@ HRESULT CISMainPPage::OnActivate()
 	SendDlgItemMessageW(IDC_SLIDER1, TBM_SETTICFREQ, 1, 0);
 	SendDlgItemMessageW(IDC_SLIDER2, TBM_SETRANGE, 0, MAKELONG(1, 4));
 	SendDlgItemMessageW(IDC_SLIDER2, TBM_SETTICFREQ, 1, 0);
-	SetDlgItemTextW(IDC_EDIT3, GetNameAndVersion());
+
+	std::wstring strInfo;
+	m_pImageSource->GetInfo(strInfo);
+	str_replace(strInfo, L"\n", L"\r\n");
+	SetDlgItemTextW(IDC_EDIT3, strInfo.c_str());
+
+	SetDlgItemTextW(IDC_EDIT4, GetNameAndVersion());
 
 	SetControls();
 

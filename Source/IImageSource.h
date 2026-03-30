@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020-2024 v0lt
+ * Copyright (C) 2020-2026 v0lt
  *
  * SPDX-License-Identifier: LGPL-2.1-only
  */
@@ -28,4 +28,6 @@ IImageSource : public IUnknown {
 	STDMETHOD_(void, SetSettings(const Settings_t setings)) PURE; // use copy of setings here
 
 	STDMETHOD(SaveSettings()) PURE;
+
+	STDMETHOD(GetInfo) (std::wstring& str) PURE;
 };
