@@ -1,6 +1,6 @@
 0.3.3 dev
 ----------------------
-
+Added information field to the settings window.
 
 0.3.2.180 - 2025-04-07
 ----------------------
@@ -8,20 +8,17 @@ Improved support for Jpeg XR (Microsoft HD Photo).
 Improved support for JPEG XL.
 Fixed registration of a filter from a folder with Unicode characters.
 
-
 0.3.0.157 - 2024-07-07
 ----------------------
 Fixed support for grayscale images.
 Fixed display of the settings window on HiDPI displays.
 The license has been changed to LGPL-2.1.
 
-
 0.2.7.130 - 2023-02-12
 ----------------------
 Fixed opening of some JPEG files.
 Expanded support for RAW images from cameras.
 Improved recognition of HEIF, HEIC, AVIF files.
-
 
 0.2.5.119 - 2022-07-15
 ----------------------
@@ -30,18 +27,15 @@ Fixed operation of IMediaSeeking interface. Now the player can control how long 
 Fixed shrinking of very large images.
 Set the default value for the "Max. non-scalable size" option to 8192 for compatibility with video renderers using Direct3D 9 or DXVA2 on some video adapters.
 
-
 0.2.3.95 - 2021-12-16
 ----------------------
 Improved support for JPEG XL.
-
 
 0.2.1.75 - 2021-04-17
 ----------------------
 Added support for DDS, HEIF (HEIC, AVIF), ORF, PEF, JPEG XL.
 Improved support for some JPEG XR files.
 Fixed output of 16-bit pictures per channel. 
-
 
 0.1.0.29 - 2020-02-10
 ----------------------
