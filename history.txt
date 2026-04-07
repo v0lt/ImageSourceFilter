@@ -1,4 +1,4 @@
-0.3.3 dev
+0.3.4.193 - 2026-04-07
 ----------------------
 Added information field to the settings window.
 
