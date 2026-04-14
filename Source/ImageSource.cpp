@@ -398,26 +398,26 @@ CImageStream::CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr)
 	if (SUCCEEDED(hr)) {
 		CComQIPtr<IWICBitmapDecoderInfo> pDecoderInfo;
 
-		hr = pDecoder->GetDecoderInfo(&pDecoderInfo);
-		if (SUCCEEDED(hr)) {
+		HRESULT hr2 = pDecoder->GetDecoderInfo(&pDecoderInfo);
+		if (SUCCEEDED(hr2)) {
 			UINT cbActual = 0;
 			std::wstring str;;
 
-			hr = pDecoderInfo->GetFriendlyName(0, nullptr, &cbActual);
-			if (SUCCEEDED(hr) && cbActual) {
+			hr2 = pDecoderInfo->GetFriendlyName(0, nullptr, &cbActual);
+			if (SUCCEEDED(hr2) && cbActual) {
 				str.resize(cbActual - 1);
-				hr = pDecoderInfo->GetFriendlyName(cbActual, str.data(), &cbActual);
-				if (SUCCEEDED(hr)) {
+				hr2 = pDecoderInfo->GetFriendlyName(cbActual, str.data(), &cbActual);
+				if (SUCCEEDED(hr2)) {
 					m_strInfo.append(str);
 					m_strInfo += ('\n');
 				}
 			}
 
-			hr = pDecoderInfo->GetMimeTypes(0, nullptr, &cbActual);
-			if (SUCCEEDED(hr) && cbActual) {
+			hr2 = pDecoderInfo->GetMimeTypes(0, nullptr, &cbActual);
+			if (SUCCEEDED(hr2) && cbActual) {
 				str.resize(cbActual - 1);
-				hr = pDecoderInfo->GetMimeTypes(cbActual, str.data(), &cbActual);
-				if (SUCCEEDED(hr)) {
+				hr2 = pDecoderInfo->GetMimeTypes(cbActual, str.data(), &cbActual);
+				if (SUCCEEDED(hr2)) {
 					m_strInfo.append(L"MIME types: ");
 					m_strInfo.append(str);
 					m_strInfo += ('\n');
