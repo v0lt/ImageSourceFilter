@@ -1,5 +1,6 @@
 0.3.5 dev
 ----------------------
+Fixed work with WIC decoders that do not implement GetDecoderInfo.
 
 0.3.4.193 - 2026-04-07
 ----------------------
