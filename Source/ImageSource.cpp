@@ -387,6 +387,17 @@ CImageStream::CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr)
 	}
 
 	if (SUCCEEDED(hr)) {
+		UINT frameCount = 0;
+		hr = pDecoder->GetFrameCount(&frameCount);
+		if (SUCCEEDED(hr)) {
+			DLog(L"Frame count: {}", frameCount);
+			if (frameCount != 1) {
+				hr = E_FAIL;
+			}
+		}
+	}
+
+	if (SUCCEEDED(hr)) {
 		GUID containerFormat = GUID_NULL;
 		pDecoder->GetContainerFormat(&containerFormat);
 		m_ContainerFormat = ContainerFormat2Str(containerFormat);
@@ -425,16 +436,6 @@ CImageStream::CImageStream(const WCHAR* name, CSource* pParent, HRESULT* phr)
 			}
 		}
 	}
-
-#ifdef _DEBUG
-	if (SUCCEEDED(hr)) {
-		UINT frameCount = 0;
-		hr = pDecoder->GetFrameCount(&frameCount);
-		if (SUCCEEDED(hr)) {
-			DLog(L"Frame count: {}", frameCount);
-		}
-	}
-#endif
 
 	if (SUCCEEDED(hr)) {
 		SetPixelFormats(pFrameDecode);
